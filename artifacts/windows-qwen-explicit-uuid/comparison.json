@@ -1,0 +1,100 @@
+{
+  "sameTemplate": true,
+  "sameParameters": true,
+  "runs": [
+    {
+      "title": "Windows Qwen launch notes 2026-11-06",
+      "operationId": "9cc9f215-4568-4ed0-8f88-2be0c26020a3",
+      "status": "failed",
+      "elapsedMs": 4254.0296,
+      "failure": "AssertionError [ERR_ASSERTION]: Exactly one new draft\n\n0 !== 1\n",
+      "tools": [
+        {
+          "name": "create_draft",
+          "input": {
+            "operationId": "9cc9f215-45-4ed0-8f88-2be0c26020a3",
+            "projectId": "Marketing",
+            "title": "Windows Qwen launch notes 2026-11-06"
+          },
+          "status": "error"
+        },
+        {
+          "name": "create_draft",
+          "input": {
+            "operationId": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+            "projectId": "Marketing",
+            "title": "Windows Qwen launch notes 2026-11-06"
+          },
+          "status": "error"
+        },
+        {
+          "name": "create_draft",
+          "input": {
+            "operationId": "d4e8f2a1-1b7c-4a90-8c3e-2b0a5d7e9f12",
+            "projectId": "Marketing",
+            "title": "Windows Qwen launch notes 2026-11-06"
+          },
+          "status": "error"
+        }
+      ],
+      "approvalCount": 0,
+      "newDraftCount": 0,
+      "requestsContainExplicitId": true,
+      "rawCreationCalls": [
+        {
+          "operationId": "9cc9f215-45-4ed0-8f88-2be0c26020a3",
+          "projectId": "Marketing",
+          "title": "Windows Qwen launch notes 2026-11-06"
+        },
+        {
+          "operationId": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+          "projectId": "Marketing",
+          "title": "Windows Qwen launch notes 2026-11-06"
+        },
+        {
+          "operationId": "d4e8f2a1-1b7c-4a90-8c3e-2b0a5d7e9f12",
+          "projectId": "Marketing",
+          "title": "Windows Qwen launch notes 2026-11-06"
+        }
+      ],
+      "transportErrors": []
+    },
+    {
+      "title": "Windows Qwen autumn campaign 2026-11-06",
+      "operationId": "8158fc1f-f44c-4bdf-88e5-de9c82d36c1e",
+      "status": "failed",
+      "elapsedMs": 60635.471999999994,
+      "failure": "Error: Proxy HTTP 502: {\"error\":\"Model server unavailable or returned an invalid response. Start a tool-capable model and check MODEL_BASE_URL and MODEL_NAME.\"}",
+      "tools": [
+        {
+          "name": "create_draft",
+          "input": {
+            "title": "Windows Qwen autumn campaign 2026-11-06",
+            "operationId": "8158fc1f-f4_4c-4bdf-88e5-de9c82d36c1e",
+            "projectId": "Marketing"
+          },
+          "status": "error"
+        }
+      ],
+      "approvalCount": 0,
+      "newDraftCount": 0,
+      "requestsContainExplicitId": true,
+      "rawCreationCalls": [
+        {
+          "title": "Windows Qwen autumn campaign 2026-11-06",
+          "operationId": "8158fc1f-f4_4c-4bdf-88e5-de9c82d36c1e",
+          "projectId": "Marketing"
+        }
+      ],
+      "transportErrors": [
+        {
+          "at": "2026-11-06T20:24:35.343Z",
+          "run": "Windows Qwen autumn campaign 2026-11-06",
+          "kind": "model-transport-error",
+          "elapsedMs": 60001.1772,
+          "error": "TimeoutError: The operation was aborted due to timeout"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,376 @@
+{
+  "node": "v24.20.0",
+  "platform": "win32",
+  "model": "panky-qwen3:4b",
+  "approval": "Browser approval by user; observer waits for approved audit event, then retries the same operation",
+  "results": [
+    {
+      "title": "Windows Qwen launch notes 2026-11-06",
+      "model": "panky-qwen3:4b",
+      "status": "passed",
+      "elapsedMs": 62093.9681,
+      "message": "The draft titled \"Windows Qwen launch notes 2026-11-06\" has been successfully created in the Marketing project and retrieved. Its draft ID is `2a3e214f-9056-46fb-a432-88de6a6c4bb9`.",
+      "before": [],
+      "after": [
+        {
+          "id": "2a3e214f-9056-46fb-a432-88de6a6c4bb9",
+          "project_id": "marketing",
+          "title": "Windows Qwen launch notes 2026-11-06"
+        }
+      ],
+      "approvals": [
+        {
+          "id": "77012865-234c-4321-b212-a1cbc125e9a0",
+          "operation_id": "5ac7e937-843d-4a1c-8252-824e5adfb896",
+          "outcome": "approved",
+          "draft_id": null,
+          "created_at": "2026-11-06T20:28:28.253Z"
+        }
+      ],
+      "traces": [
+        {
+          "id": "0a2dc813-aac9-4d79-a193-1db1aefe304e",
+          "name": "search_projects",
+          "input": {},
+          "output": [
+            {
+              "id": "marketing",
+              "name": "Marketing"
+            }
+          ],
+          "status": "success",
+          "durationMs": 22.86
+        },
+        {
+          "id": "14cfe9a3-727e-4616-9866-cb16ed795798",
+          "name": "create_draft",
+          "input": {
+            "projectId": "marketing",
+            "title": "Windows Qwen launch notes 2026-11-06"
+          },
+          "output": {
+            "operationId": "5ac7e937-843d-4a1c-8252-824e5adfb896",
+            "status": "confirmation_required",
+            "draftId": null
+          },
+          "status": "success",
+          "durationMs": 25.28
+        },
+        {
+          "id": "9f6a37d4-aecf-4c60-a7bc-bcbc3b3d88dd",
+          "name": "create_draft",
+          "input": {
+            "projectId": "marketing",
+            "title": "Windows Qwen launch notes 2026-11-06"
+          },
+          "output": {
+            "operationId": "5ac7e937-843d-4a1c-8252-824e5adfb896",
+            "status": "completed",
+            "draftId": "2a3e214f-9056-46fb-a432-88de6a6c4bb9"
+          },
+          "status": "success",
+          "durationMs": 6.9
+        },
+        {
+          "id": "96b75e87-4be7-4032-8cce-ce9ef2fb9dfc",
+          "name": "get_draft",
+          "input": {
+            "id": "2a3e214f-9056-46fb-a432-88de6a6c4bb9"
+          },
+          "output": {
+            "id": "2a3e214f-9056-46fb-a432-88de6a6c4bb9",
+            "project_id": "marketing",
+            "title": "Windows Qwen launch notes 2026-11-06"
+          },
+          "status": "success",
+          "durationMs": 19.82
+        }
+      ],
+      "events": [
+        {
+          "id": "0f9b59d2-5772-436f-93ac-65390cf312d4",
+          "operation_id": "5ac7e937-843d-4a1c-8252-824e5adfb896",
+          "outcome": "confirmation_required",
+          "draft_id": null,
+          "created_at": "2026-11-06T20:27:28.758Z"
+        },
+        {
+          "id": "77012865-234c-4321-b212-a1cbc125e9a0",
+          "operation_id": "5ac7e937-843d-4a1c-8252-824e5adfb896",
+          "outcome": "approved",
+          "draft_id": null,
+          "created_at": "2026-11-06T20:28:28.253Z"
+        },
+        {
+          "id": "e779c882-3a82-4df3-b387-8cb9f6ca9983",
+          "operation_id": "5ac7e937-843d-4a1c-8252-824e5adfb896",
+          "outcome": "completed",
+          "draft_id": "2a3e214f-9056-46fb-a432-88de6a6c4bb9",
+          "created_at": "2026-11-06T20:28:28.263Z"
+        }
+      ],
+      "calls": [
+        {
+          "id": "0a2dc813-aac9-4d79-a193-1db1aefe304e",
+          "operation_id": null,
+          "method": "GET",
+          "path": "/api/projects",
+          "status": 200,
+          "created_at": "2026-11-06T20:27:28.439Z"
+        },
+        {
+          "id": "14cfe9a3-727e-4616-9866-cb16ed795798",
+          "operation_id": "5ac7e937-843d-4a1c-8252-824e5adfb896",
+          "method": "POST",
+          "path": "/api/drafts",
+          "status": 200,
+          "created_at": "2026-11-06T20:27:28.763Z"
+        },
+        {
+          "id": "54aabfb3-9b9c-4670-9473-1a4eab547beb",
+          "operation_id": "5ac7e937-843d-4a1c-8252-824e5adfb896",
+          "method": "POST",
+          "path": "/api/drafts",
+          "status": 200,
+          "created_at": "2026-11-06T20:28:28.267Z"
+        },
+        {
+          "id": "9f6a37d4-aecf-4c60-a7bc-bcbc3b3d88dd",
+          "operation_id": "5ac7e937-843d-4a1c-8252-824e5adfb896",
+          "method": "POST",
+          "path": "/api/drafts",
+          "status": 200,
+          "created_at": "2026-11-06T20:28:29.358Z"
+        },
+        {
+          "id": "96b75e87-4be7-4032-8cce-ce9ef2fb9dfc",
+          "operation_id": null,
+          "method": "GET",
+          "path": "/api/drafts/2a3e214f-9056-46fb-a432-88de6a6c4bb9",
+          "status": 200,
+          "created_at": "2026-11-06T20:28:29.762Z"
+        }
+      ]
+    },
+    {
+      "title": "Windows Qwen autumn campaign 2026-11-06",
+      "model": "panky-qwen3:4b",
+      "status": "passed",
+      "elapsedMs": 19648.9793,
+      "message": "The draft titled \"Windows Qwen autumn campaign 2026-11-06\" has been successfully created in the Marketing project and retrieved. Its ID is `eb0a2d9c-c071-4648-8b6d-648284f4f071`.",
+      "before": [
+        {
+          "id": "2a3e214f-9056-46fb-a432-88de6a6c4bb9",
+          "project_id": "marketing",
+          "title": "Windows Qwen launch notes 2026-11-06"
+        }
+      ],
+      "after": [
+        {
+          "id": "2a3e214f-9056-46fb-a432-88de6a6c4bb9",
+          "project_id": "marketing",
+          "title": "Windows Qwen launch notes 2026-11-06"
+        },
+        {
+          "id": "eb0a2d9c-c071-4648-8b6d-648284f4f071",
+          "project_id": "marketing",
+          "title": "Windows Qwen autumn campaign 2026-11-06"
+        }
+      ],
+      "approvals": [
+        {
+          "id": "f67e96fd-17d4-4bd3-9b2c-51d2a8d7044f",
+          "operation_id": "769363a3-635a-4505-ad21-be3d6ac7461d",
+          "outcome": "approved",
+          "draft_id": null,
+          "created_at": "2026-11-06T20:28:48.352Z"
+        }
+      ],
+      "traces": [
+        {
+          "id": "e705f17c-5318-4b87-bc47-2692e4010bdb",
+          "name": "search_projects",
+          "input": {},
+          "output": [
+            {
+              "id": "marketing",
+              "name": "Marketing"
+            }
+          ],
+          "status": "success",
+          "durationMs": 13.09
+        },
+        {
+          "id": "b1b2c3da-5396-4d0b-b6c7-16d6426a5e7c",
+          "name": "create_draft",
+          "input": {
+            "projectId": "marketing",
+            "title": "Windows Qwen autumn campaign 2026-11-06"
+          },
+          "output": {
+            "operationId": "769363a3-635a-4505-ad21-be3d6ac7461d",
+            "status": "confirmation_required",
+            "draftId": null
+          },
+          "status": "success",
+          "durationMs": 18.39
+        },
+        {
+          "id": "c78dabb1-6961-4bf0-87f4-8ca1ee6fa1aa",
+          "name": "create_draft",
+          "input": {
+            "projectId": "marketing",
+            "title": "Windows Qwen autumn campaign 2026-11-06"
+          },
+          "output": {
+            "operationId": "769363a3-635a-4505-ad21-be3d6ac7461d",
+            "status": "completed",
+            "draftId": "eb0a2d9c-c071-4648-8b6d-648284f4f071"
+          },
+          "status": "success",
+          "durationMs": 10.06
+        },
+        {
+          "id": "db2a9a9f-95ca-44e4-b0b6-0d2d637174d8",
+          "name": "get_draft",
+          "input": {
+            "id": "eb0a2d9c-c071-4648-8b6d-648284f4f071"
+          },
+          "output": {
+            "id": "eb0a2d9c-c071-4648-8b6d-648284f4f071",
+            "project_id": "marketing",
+            "title": "Windows Qwen autumn campaign 2026-11-06"
+          },
+          "status": "success",
+          "durationMs": 8.86
+        }
+      ],
+      "events": [
+        {
+          "id": "0f9b59d2-5772-436f-93ac-65390cf312d4",
+          "operation_id": "5ac7e937-843d-4a1c-8252-824e5adfb896",
+          "outcome": "confirmation_required",
+          "draft_id": null,
+          "created_at": "2026-11-06T20:27:28.758Z"
+        },
+        {
+          "id": "77012865-234c-4321-b212-a1cbc125e9a0",
+          "operation_id": "5ac7e937-843d-4a1c-8252-824e5adfb896",
+          "outcome": "approved",
+          "draft_id": null,
+          "created_at": "2026-11-06T20:28:28.253Z"
+        },
+        {
+          "id": "e779c882-3a82-4df3-b387-8cb9f6ca9983",
+          "operation_id": "5ac7e937-843d-4a1c-8252-824e5adfb896",
+          "outcome": "completed",
+          "draft_id": "2a3e214f-9056-46fb-a432-88de6a6c4bb9",
+          "created_at": "2026-11-06T20:28:28.263Z"
+        },
+        {
+          "id": "81464c77-ffb8-4147-a732-29b965ac0a8d",
+          "operation_id": "769363a3-635a-4505-ad21-be3d6ac7461d",
+          "outcome": "confirmation_required",
+          "draft_id": null,
+          "created_at": "2026-11-06T20:28:30.888Z"
+        },
+        {
+          "id": "f67e96fd-17d4-4bd3-9b2c-51d2a8d7044f",
+          "operation_id": "769363a3-635a-4505-ad21-be3d6ac7461d",
+          "outcome": "approved",
+          "draft_id": null,
+          "created_at": "2026-11-06T20:28:48.352Z"
+        },
+        {
+          "id": "53f74fec-04ee-47d4-91f3-8dfd8ef960c5",
+          "operation_id": "769363a3-635a-4505-ad21-be3d6ac7461d",
+          "outcome": "completed",
+          "draft_id": "eb0a2d9c-c071-4648-8b6d-648284f4f071",
+          "created_at": "2026-11-06T20:28:48.359Z"
+        }
+      ],
+      "calls": [
+        {
+          "id": "0a2dc813-aac9-4d79-a193-1db1aefe304e",
+          "operation_id": null,
+          "method": "GET",
+          "path": "/api/projects",
+          "status": 200,
+          "created_at": "2026-11-06T20:27:28.439Z"
+        },
+        {
+          "id": "14cfe9a3-727e-4616-9866-cb16ed795798",
+          "operation_id": "5ac7e937-843d-4a1c-8252-824e5adfb896",
+          "method": "POST",
+          "path": "/api/drafts",
+          "status": 200,
+          "created_at": "2026-11-06T20:27:28.763Z"
+        },
+        {
+          "id": "54aabfb3-9b9c-4670-9473-1a4eab547beb",
+          "operation_id": "5ac7e937-843d-4a1c-8252-824e5adfb896",
+          "method": "POST",
+          "path": "/api/drafts",
+          "status": 200,
+          "created_at": "2026-11-06T20:28:28.267Z"
+        },
+        {
+          "id": "9f6a37d4-aecf-4c60-a7bc-bcbc3b3d88dd",
+          "operation_id": "5ac7e937-843d-4a1c-8252-824e5adfb896",
+          "method": "POST",
+          "path": "/api/drafts",
+          "status": 200,
+          "created_at": "2026-11-06T20:28:29.358Z"
+        },
+        {
+          "id": "96b75e87-4be7-4032-8cce-ce9ef2fb9dfc",
+          "operation_id": null,
+          "method": "GET",
+          "path": "/api/drafts/2a3e214f-9056-46fb-a432-88de6a6c4bb9",
+          "status": 200,
+          "created_at": "2026-11-06T20:28:29.762Z"
+        },
+        {
+          "id": "e705f17c-5318-4b87-bc47-2692e4010bdb",
+          "operation_id": null,
+          "method": "GET",
+          "path": "/api/projects",
+          "status": 200,
+          "created_at": "2026-11-06T20:28:30.588Z"
+        },
+        {
+          "id": "b1b2c3da-5396-4d0b-b6c7-16d6426a5e7c",
+          "operation_id": "769363a3-635a-4505-ad21-be3d6ac7461d",
+          "method": "POST",
+          "path": "/api/drafts",
+          "status": 200,
+          "created_at": "2026-11-06T20:28:30.893Z"
+        },
+        {
+          "id": "66be3dde-6516-4b22-8bab-9e243687744d",
+          "operation_id": "769363a3-635a-4505-ad21-be3d6ac7461d",
+          "method": "POST",
+          "path": "/api/drafts",
+          "status": 200,
+          "created_at": "2026-11-06T20:28:48.363Z"
+        },
+        {
+          "id": "c78dabb1-6961-4bf0-87f4-8ca1ee6fa1aa",
+          "operation_id": "769363a3-635a-4505-ad21-be3d6ac7461d",
+          "method": "POST",
+          "path": "/api/drafts",
+          "status": 200,
+          "created_at": "2026-11-06T20:28:49.075Z"
+        },
+        {
+          "id": "db2a9a9f-95ca-44e4-b0b6-0d2d637174d8",
+          "operation_id": null,
+          "method": "GET",
+          "path": "/api/drafts/eb0a2d9c-c071-4648-8b6d-648284f4f071",
+          "status": 200,
+          "created_at": "2026-11-06T20:28:49.471Z"
+        }
+      ]
+    }
+  ]
+}

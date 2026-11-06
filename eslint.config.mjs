@@ -12,6 +12,7 @@ export default defineConfig(
     'coverage/**',
     'playwright-report/**',
     'test-results/**',
+    'artifacts/**',
   ]),
   {
     files: ['**/*.{js,mjs,cjs,ts,mts,cts,tsx}'],

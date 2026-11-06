@@ -1,0 +1,124 @@
+{
+  "node": "v24.20.0",
+  "platform": "win32",
+  "model": "panky-qwen3:4b",
+  "approval": "Separate authenticated test operator, not a human UI click; same retry behavior as existing CLI harness",
+  "results": [
+    {
+      "title": "Windows Qwen launch notes 2026-11-06",
+      "model": "panky-qwen3:4b",
+      "status": "failed",
+      "elapsedMs": 1347.3707,
+      "message": "The provided `operationId` \"windows-qwen-launch-notes-2026-11-06\" is not a valid UUID. A valid UUID must follow the format `8-4-4-4-12` hexadecimal digits separated by hyphens. I will generate a valid UUID for this operation and retry the draft creation. \n\nProceeding with generating a valid UUID...",
+      "failure": {
+        "message": "AssertionError [ERR_ASSERTION]: Exactly one new draft\n\n0 !== 1\n",
+        "stack": "AssertionError [ERR_ASSERTION]: Exactly one new draft\n\n0 !== 1\n\n    at file:///C:/Users/jackw/Documents/dev/deedspan/artifacts/windows-panky-comparison/run.mjs:170:14\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)"
+      },
+      "before": [],
+      "after": [],
+      "approvals": [],
+      "traces": [
+        {
+          "id": "0df8aabb-1308-4492-b73f-c15f6cb21904",
+          "name": "search_projects",
+          "input": {},
+          "output": [
+            {
+              "id": "marketing",
+              "name": "Marketing"
+            }
+          ],
+          "status": "success",
+          "durationMs": 20.93
+        },
+        {
+          "id": "18ceffb0-0b86-4f80-939f-188b45d5b87b",
+          "name": "create_draft",
+          "input": {
+            "operationId": "windows-qwen-launch-notes-2026-11-06",
+            "projectId": "marketing",
+            "title": "Windows Qwen launch notes 2026-11-06"
+          },
+          "output": {
+            "error": "[\n  {\n    \"origin\": \"string\",\n    \"code\": \"invalid_format\",\n    \"format\": \"uuid\",\n    \"pattern\": \"/^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$/\",\n    \"path\": [\n      \"operationId\"\n    ],\n    \"message\": \"Invalid UUID\"\n  }\n]"
+          },
+          "status": "error",
+          "durationMs": 0.85
+        }
+      ],
+      "events": [],
+      "calls": [
+        {
+          "id": "0df8aabb-1308-4492-b73f-c15f6cb21904",
+          "operation_id": null,
+          "method": "GET",
+          "path": "/api/projects",
+          "status": 200,
+          "created_at": "2026-11-06T20:26:08.974Z"
+        }
+      ]
+    },
+    {
+      "title": "Windows Qwen autumn campaign 2026-11-06",
+      "model": "panky-qwen3:4b",
+      "status": "failed",
+      "elapsedMs": 1248.8684000000003,
+      "message": "The provided `operationId` \"windows-qwen-autumn-campaign-2026-11-06\" is not a valid UUID. A valid UUID must follow the format `8-4-4-4-12` hexadecimal digits with hyphens. I will generate a valid UUID for this operation and retry the draft creation. \n\nLet me generate a valid UUID and proceed.",
+      "failure": {
+        "message": "AssertionError [ERR_ASSERTION]: Exactly one new draft\n\n0 !== 1\n",
+        "stack": "AssertionError [ERR_ASSERTION]: Exactly one new draft\n\n0 !== 1\n\n    at file:///C:/Users/jackw/Documents/dev/deedspan/artifacts/windows-panky-comparison/run.mjs:170:14\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)"
+      },
+      "before": [],
+      "after": [],
+      "approvals": [],
+      "traces": [
+        {
+          "id": "6d2b100f-d76b-4808-8d66-f60498ea8dbd",
+          "name": "search_projects",
+          "input": {},
+          "output": [
+            {
+              "id": "marketing",
+              "name": "Marketing"
+            }
+          ],
+          "status": "success",
+          "durationMs": 16.03
+        },
+        {
+          "id": "fd72f7bb-81a7-45b5-a8e1-70b184418719",
+          "name": "create_draft",
+          "input": {
+            "operationId": "windows-qwen-autumn-campaign-2026-11-06",
+            "projectId": "marketing",
+            "title": "Windows Qwen autumn campaign 2026-11-06"
+          },
+          "output": {
+            "error": "[\n  {\n    \"origin\": \"string\",\n    \"code\": \"invalid_format\",\n    \"format\": \"uuid\",\n    \"pattern\": \"/^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$/\",\n    \"path\": [\n      \"operationId\"\n    ],\n    \"message\": \"Invalid UUID\"\n  }\n]"
+          },
+          "status": "error",
+          "durationMs": 0.15
+        }
+      ],
+      "events": [],
+      "calls": [
+        {
+          "id": "0df8aabb-1308-4492-b73f-c15f6cb21904",
+          "operation_id": null,
+          "method": "GET",
+          "path": "/api/projects",
+          "status": 200,
+          "created_at": "2026-11-06T20:26:08.974Z"
+        },
+        {
+          "id": "6d2b100f-d76b-4808-8d66-f60498ea8dbd",
+          "operation_id": null,
+          "method": "GET",
+          "path": "/api/projects",
+          "status": 200,
+          "created_at": "2026-11-06T20:26:10.224Z"
+        }
+      ]
+    }
+  ]
+}

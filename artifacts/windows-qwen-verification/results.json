@@ -1,0 +1,180 @@
+{
+  "node": "v24.20.0",
+  "platform": "win32",
+  "model": "qwen3:4b-instruct-2507-q4_K_M",
+  "approval": "Separate authenticated test operator, not a human UI click; same retry behavior as existing CLI harness",
+  "results": [
+    {
+      "title": "Windows Qwen launch notes 2026-11-06",
+      "model": "qwen3:4b-instruct-2507-q4_K_M",
+      "status": "failed",
+      "elapsedMs": 8139.488,
+      "message": "The error persists, indicating that the `operationId` field is still undefined or not being properly handled. This suggests a potential system-level issue or a limitation in the current function implementation. \n\nSince the operation is failing repeatedly and no valid `operationId` is being generated, I cannot proceed with creating the draft successfully. I will not attempt further retries as the issue appears to be systemic and not resolvable through repeated calls.\n\nI recommend checking the system configuration or contacting support to resolve the `operationId` generation issue. \n\nAt this point, I cannot complete the task of creating and retrieving the draft.",
+      "failure": {
+        "message": "AssertionError [ERR_ASSERTION]: Exactly one new draft\n\n0 !== 1\n",
+        "stack": "AssertionError [ERR_ASSERTION]: Exactly one new draft\n\n0 !== 1\n\n    at file:///C:/Users/jackw/Documents/dev/deedspan/artifacts/windows-qwen-verification/run.mjs:97:14\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)"
+      },
+      "before": [],
+      "after": [],
+      "approvals": [],
+      "traces": [
+        {
+          "id": "db0dcb96-a7a8-433b-a896-0ee7c8a93ec9",
+          "name": "search_projects",
+          "input": {
+            "projectId": "Marketing"
+          },
+          "output": {
+            "error": "[\n  {\n    \"code\": \"unrecognized_keys\",\n    \"keys\": [\n      \"projectId\"\n    ],\n    \"path\": [],\n    \"message\": \"Unrecognized key: \\\"projectId\\\"\"\n  }\n]"
+          },
+          "status": "error",
+          "durationMs": 0.91
+        },
+        {
+          "id": "64f2d9c2-afab-4343-9e97-1aff2885b69b",
+          "name": "search_projects",
+          "input": {},
+          "output": [
+            {
+              "id": "marketing",
+              "name": "Marketing"
+            }
+          ],
+          "status": "success",
+          "durationMs": 7.35
+        },
+        {
+          "id": "a2f7d0f0-2114-4120-b9ff-601924f23d95",
+          "name": "create_draft",
+          "input": {
+            "projectId": "marketing",
+            "title": "Windows Qwen launch notes 2026-11-06"
+          },
+          "output": {
+            "error": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"operationId\"\n    ],\n    \"message\": \"Invalid input: expected string, received undefined\"\n  }\n]"
+          },
+          "status": "error",
+          "durationMs": 0.43
+        },
+        {
+          "id": "aa3cdb94-0720-49a4-9ea1-25ce441e44e5",
+          "name": "create_draft",
+          "input": {
+            "projectId": "marketing",
+            "title": "Windows Qwen launch notes 2026-11-06"
+          },
+          "output": {
+            "error": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"operationId\"\n    ],\n    \"message\": \"Invalid input: expected string, received undefined\"\n  }\n]"
+          },
+          "status": "error",
+          "durationMs": 0.14
+        }
+      ],
+      "events": [],
+      "calls": [
+        {
+          "id": "64f2d9c2-afab-4343-9e97-1aff2885b69b",
+          "operation_id": null,
+          "method": "GET",
+          "path": "/api/projects",
+          "status": 200,
+          "created_at": "2026-11-06T20:21:02.790Z"
+        }
+      ]
+    },
+    {
+      "title": "Windows Qwen autumn campaign 2026-11-06",
+      "model": "qwen3:4b-instruct-2507-q4_K_M",
+      "status": "failed",
+      "elapsedMs": 2630.858400000001,
+      "message": "The draft with the ID \"marketing\" was not found, indicating no prior draft exists for that project.\n\nGiven that the creation of the draft consistently fails due to an undefined `operationId`, and no saved draft is found, I conclude that either:\n\n1. The system cannot generate or handle `operationId` properly in this context, or  \n2. The draft creation operation is not successfully completed.\n\nSince no draft has been successfully created or retrieved, and the operation fails repeatedly, I cannot confirm the successful creation or retrieval of the draft titled \"Windows Qwen autumn campaign 2026-11-06\".\n\nIf you'd like, I can retry with a different approach or assist further. Let me know.",
+      "failure": {
+        "message": "AssertionError [ERR_ASSERTION]: Exactly one new draft\n\n0 !== 1\n",
+        "stack": "AssertionError [ERR_ASSERTION]: Exactly one new draft\n\n0 !== 1\n\n    at file:///C:/Users/jackw/Documents/dev/deedspan/artifacts/windows-qwen-verification/run.mjs:97:14\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)"
+      },
+      "before": [],
+      "after": [],
+      "approvals": [],
+      "traces": [
+        {
+          "id": "6467e1bf-08e6-49d1-b04f-4bc84e643241",
+          "name": "search_projects",
+          "input": {},
+          "output": [
+            {
+              "id": "marketing",
+              "name": "Marketing"
+            }
+          ],
+          "status": "success",
+          "durationMs": 10.6
+        },
+        {
+          "id": "c8de8b60-4fef-468f-92ff-9cefa6970a05",
+          "name": "create_draft",
+          "input": {
+            "projectId": "marketing",
+            "title": "Windows Qwen autumn campaign 2026-11-06"
+          },
+          "output": {
+            "error": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"operationId\"\n    ],\n    \"message\": \"Invalid input: expected string, received undefined\"\n  }\n]"
+          },
+          "status": "error",
+          "durationMs": 0.21
+        },
+        {
+          "id": "64af06dd-52a5-4bfb-8148-84dd389f7469",
+          "name": "create_draft",
+          "input": {
+            "projectId": "marketing",
+            "title": "Windows Qwen autumn campaign 2026-11-06"
+          },
+          "output": {
+            "error": "[\n  {\n    \"expected\": \"string\",\n    \"code\": \"invalid_type\",\n    \"path\": [\n      \"operationId\"\n    ],\n    \"message\": \"Invalid input: expected string, received undefined\"\n  }\n]"
+          },
+          "status": "error",
+          "durationMs": 0.15
+        },
+        {
+          "id": "d78ef781-9c5d-4c9b-803c-d2515895af09",
+          "name": "get_draft",
+          "input": {
+            "id": "marketing"
+          },
+          "output": {
+            "error": "{\"error\":\"Draft not found\"}"
+          },
+          "status": "error",
+          "durationMs": 15.37
+        }
+      ],
+      "events": [],
+      "calls": [
+        {
+          "id": "64f2d9c2-afab-4343-9e97-1aff2885b69b",
+          "operation_id": null,
+          "method": "GET",
+          "path": "/api/projects",
+          "status": 200,
+          "created_at": "2026-11-06T20:21:02.790Z"
+        },
+        {
+          "id": "6467e1bf-08e6-49d1-b04f-4bc84e643241",
+          "operation_id": null,
+          "method": "GET",
+          "path": "/api/projects",
+          "status": 200,
+          "created_at": "2026-11-06T20:21:05.111Z"
+        },
+        {
+          "id": "d78ef781-9c5d-4c9b-803c-d2515895af09",
+          "operation_id": null,
+          "method": "GET",
+          "path": "/api/drafts/marketing",
+          "status": 404,
+          "created_at": "2026-11-06T20:21:06.579Z"
+        }
+      ]
+    }
+  ]
+}

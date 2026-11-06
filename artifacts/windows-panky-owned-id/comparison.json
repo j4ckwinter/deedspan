@@ -1,0 +1,138 @@
+[
+  {
+    "directory": "windows-qwen-verification",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "runs": [
+      {
+        "title": "Windows Qwen launch notes 2026-11-06",
+        "status": "failed",
+        "approvals": 0,
+        "newDrafts": 0,
+        "tools": [
+          "search_projects:error",
+          "search_projects:success",
+          "create_draft:error",
+          "create_draft:error"
+        ]
+      },
+      {
+        "title": "Windows Qwen autumn campaign 2026-11-06",
+        "status": "failed",
+        "approvals": 0,
+        "newDrafts": 0,
+        "tools": [
+          "search_projects:success",
+          "create_draft:error",
+          "create_draft:error",
+          "get_draft:error"
+        ]
+      }
+    ]
+  },
+  {
+    "directory": "windows-qwen-explicit-uuid",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "runs": [
+      {
+        "title": "Windows Qwen launch notes 2026-11-06",
+        "status": "failed",
+        "approvals": 0,
+        "newDrafts": 0,
+        "tools": [
+          "create_draft:error",
+          "create_draft:error",
+          "create_draft:error"
+        ]
+      },
+      {
+        "title": "Windows Qwen autumn campaign 2026-11-06",
+        "status": "failed",
+        "approvals": 0,
+        "newDrafts": 0,
+        "tools": [
+          "create_draft:error"
+        ]
+      }
+    ]
+  },
+  {
+    "directory": "windows-panky-comparison",
+    "model": "panky-qwen3:4b",
+    "runs": [
+      {
+        "title": "Windows Qwen launch notes 2026-11-06",
+        "status": "failed",
+        "approvals": 0,
+        "newDrafts": 0,
+        "tools": [
+          "search_projects:success",
+          "create_draft:error"
+        ]
+      },
+      {
+        "title": "Windows Qwen autumn campaign 2026-11-06",
+        "status": "failed",
+        "approvals": 0,
+        "newDrafts": 0,
+        "tools": [
+          "search_projects:success",
+          "create_draft:error"
+        ]
+      }
+    ]
+  },
+  {
+    "directory": "windows-qwen-owned-id",
+    "model": "qwen3:4b-instruct-2507-q4_K_M",
+    "runs": [
+      {
+        "title": "Windows Qwen launch notes 2026-11-06",
+        "status": "failed",
+        "approvals": 0,
+        "newDrafts": 0,
+        "tools": [
+          "create_draft:error"
+        ]
+      },
+      {
+        "title": "Windows Qwen autumn campaign 2026-11-06",
+        "status": "failed",
+        "approvals": 0,
+        "newDrafts": 0,
+        "tools": [
+          "create_draft:error"
+        ]
+      }
+    ]
+  },
+  {
+    "directory": "windows-panky-owned-id",
+    "model": "panky-qwen3:4b",
+    "runs": [
+      {
+        "title": "Windows Qwen launch notes 2026-11-06",
+        "status": "passed",
+        "approvals": 1,
+        "newDrafts": 1,
+        "tools": [
+          "search_projects:success",
+          "create_draft:success",
+          "create_draft:success",
+          "get_draft:success"
+        ]
+      },
+      {
+        "title": "Windows Qwen autumn campaign 2026-11-06",
+        "status": "passed",
+        "approvals": 1,
+        "newDrafts": 1,
+        "tools": [
+          "search_projects:success",
+          "create_draft:success",
+          "create_draft:success",
+          "get_draft:success"
+        ]
+      }
+    ]
+  }
+]

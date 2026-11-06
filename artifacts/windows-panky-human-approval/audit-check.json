@@ -1,0 +1,114 @@
+[
+  {
+    "title": "Windows Qwen launch notes 2026-11-06",
+    "status": "passed",
+    "operationId": "5ac7e937-843d-4a1c-8252-824e5adfb896",
+    "draftId": "2a3e214f-9056-46fb-a432-88de6a6c4bb9",
+    "events": [
+      {
+        "id": "0f9b59d2-5772-436f-93ac-65390cf312d4",
+        "operation_id": "5ac7e937-843d-4a1c-8252-824e5adfb896",
+        "outcome": "confirmation_required",
+        "draft_id": null,
+        "created_at": "2026-11-06T20:27:28.758Z"
+      },
+      {
+        "id": "77012865-234c-4321-b212-a1cbc125e9a0",
+        "operation_id": "5ac7e937-843d-4a1c-8252-824e5adfb896",
+        "outcome": "approved",
+        "draft_id": null,
+        "created_at": "2026-11-06T20:28:28.253Z"
+      },
+      {
+        "id": "e779c882-3a82-4df3-b387-8cb9f6ca9983",
+        "operation_id": "5ac7e937-843d-4a1c-8252-824e5adfb896",
+        "outcome": "completed",
+        "draft_id": "2a3e214f-9056-46fb-a432-88de6a6c4bb9",
+        "created_at": "2026-11-06T20:28:28.263Z"
+      }
+    ],
+    "calls": [
+      {
+        "id": "14cfe9a3-727e-4616-9866-cb16ed795798",
+        "operation_id": "5ac7e937-843d-4a1c-8252-824e5adfb896",
+        "method": "POST",
+        "path": "/api/drafts",
+        "status": 200,
+        "created_at": "2026-11-06T20:27:28.763Z"
+      },
+      {
+        "id": "54aabfb3-9b9c-4670-9473-1a4eab547beb",
+        "operation_id": "5ac7e937-843d-4a1c-8252-824e5adfb896",
+        "method": "POST",
+        "path": "/api/drafts",
+        "status": 200,
+        "created_at": "2026-11-06T20:28:28.267Z"
+      },
+      {
+        "id": "9f6a37d4-aecf-4c60-a7bc-bcbc3b3d88dd",
+        "operation_id": "5ac7e937-843d-4a1c-8252-824e5adfb896",
+        "method": "POST",
+        "path": "/api/drafts",
+        "status": 200,
+        "created_at": "2026-11-06T20:28:29.358Z"
+      }
+    ],
+    "newDrafts": 1
+  },
+  {
+    "title": "Windows Qwen autumn campaign 2026-11-06",
+    "status": "passed",
+    "operationId": "769363a3-635a-4505-ad21-be3d6ac7461d",
+    "draftId": "eb0a2d9c-c071-4648-8b6d-648284f4f071",
+    "events": [
+      {
+        "id": "81464c77-ffb8-4147-a732-29b965ac0a8d",
+        "operation_id": "769363a3-635a-4505-ad21-be3d6ac7461d",
+        "outcome": "confirmation_required",
+        "draft_id": null,
+        "created_at": "2026-11-06T20:28:30.888Z"
+      },
+      {
+        "id": "f67e96fd-17d4-4bd3-9b2c-51d2a8d7044f",
+        "operation_id": "769363a3-635a-4505-ad21-be3d6ac7461d",
+        "outcome": "approved",
+        "draft_id": null,
+        "created_at": "2026-11-06T20:28:48.352Z"
+      },
+      {
+        "id": "53f74fec-04ee-47d4-91f3-8dfd8ef960c5",
+        "operation_id": "769363a3-635a-4505-ad21-be3d6ac7461d",
+        "outcome": "completed",
+        "draft_id": "eb0a2d9c-c071-4648-8b6d-648284f4f071",
+        "created_at": "2026-11-06T20:28:48.359Z"
+      }
+    ],
+    "calls": [
+      {
+        "id": "b1b2c3da-5396-4d0b-b6c7-16d6426a5e7c",
+        "operation_id": "769363a3-635a-4505-ad21-be3d6ac7461d",
+        "method": "POST",
+        "path": "/api/drafts",
+        "status": 200,
+        "created_at": "2026-11-06T20:28:30.893Z"
+      },
+      {
+        "id": "66be3dde-6516-4b22-8bab-9e243687744d",
+        "operation_id": "769363a3-635a-4505-ad21-be3d6ac7461d",
+        "method": "POST",
+        "path": "/api/drafts",
+        "status": 200,
+        "created_at": "2026-11-06T20:28:48.363Z"
+      },
+      {
+        "id": "c78dabb1-6961-4bf0-87f4-8ca1ee6fa1aa",
+        "operation_id": "769363a3-635a-4505-ad21-be3d6ac7461d",
+        "method": "POST",
+        "path": "/api/drafts",
+        "status": 200,
+        "created_at": "2026-11-06T20:28:49.075Z"
+      }
+    ],
+    "newDrafts": 1
+  }
+]

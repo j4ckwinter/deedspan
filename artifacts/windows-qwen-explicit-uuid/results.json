@@ -1,0 +1,119 @@
+{
+  "node": "v24.20.0",
+  "platform": "win32",
+  "model": "qwen3:4b-instruct-2507-q4_K_M",
+  "approval": "Separate authenticated test operator, not a human UI click; same retry behavior as existing CLI harness",
+  "results": [
+    {
+      "title": "Windows Qwen launch notes 2026-11-06",
+      "operationId": "9cc9f215-4568-4ed0-8f88-2be0c26020a3",
+      "model": "qwen3:4b-instruct-2507-q4_K_M",
+      "status": "failed",
+      "elapsedMs": 4254.0296,
+      "message": "The operation failed due to \"Project access denied,\" indicating that the user does not have permission to access or create a draft in the \"Marketing\" project. \n\nI cannot proceed with creating a draft in the Marketing project without proper access. Please verify the user's permissions or confirm if access to the Marketing project is granted. Once approved, I can attempt the operation again.",
+      "failure": {
+        "message": "AssertionError [ERR_ASSERTION]: Exactly one new draft\n\n0 !== 1\n",
+        "stack": "AssertionError [ERR_ASSERTION]: Exactly one new draft\n\n0 !== 1\n\n    at file:///C:/Users/jackw/Documents/dev/deedspan/artifacts/windows-qwen-explicit-uuid/run.mjs:171:14\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)"
+      },
+      "before": [],
+      "after": [],
+      "approvals": [],
+      "traces": [
+        {
+          "id": "09d4014a-70e9-461c-896a-3f4fb8860d39",
+          "name": "create_draft",
+          "input": {
+            "operationId": "9cc9f215-45-4ed0-8f88-2be0c26020a3",
+            "projectId": "Marketing",
+            "title": "Windows Qwen launch notes 2026-11-06"
+          },
+          "output": {
+            "error": "[\n  {\n    \"origin\": \"string\",\n    \"code\": \"invalid_format\",\n    \"format\": \"uuid\",\n    \"pattern\": \"/^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$/\",\n    \"path\": [\n      \"operationId\"\n    ],\n    \"message\": \"Invalid UUID\"\n  }\n]"
+          },
+          "status": "error",
+          "durationMs": 1.15
+        },
+        {
+          "id": "0eefda95-a763-4c32-ad1b-cf5c68d7fa7b",
+          "name": "create_draft",
+          "input": {
+            "operationId": "a1b2c3d4-e5f6-7890-1234-567890abcdef",
+            "projectId": "Marketing",
+            "title": "Windows Qwen launch notes 2026-11-06"
+          },
+          "output": {
+            "error": "[\n  {\n    \"origin\": \"string\",\n    \"code\": \"invalid_format\",\n    \"format\": \"uuid\",\n    \"pattern\": \"/^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$/\",\n    \"path\": [\n      \"operationId\"\n    ],\n    \"message\": \"Invalid UUID\"\n  }\n]"
+          },
+          "status": "error",
+          "durationMs": 0.22
+        },
+        {
+          "id": "2ade70ef-bb08-419f-a56b-162be68575ec",
+          "name": "create_draft",
+          "input": {
+            "operationId": "d4e8f2a1-1b7c-4a90-8c3e-2b0a5d7e9f12",
+            "projectId": "Marketing",
+            "title": "Windows Qwen launch notes 2026-11-06"
+          },
+          "output": {
+            "error": "{\"error\":\"Project access denied\"}"
+          },
+          "status": "error",
+          "durationMs": 8.66
+        }
+      ],
+      "events": [],
+      "calls": [
+        {
+          "id": "2ade70ef-bb08-419f-a56b-162be68575ec",
+          "operation_id": "d4e8f2a1-1b7c-4a90-8c3e-2b0a5d7e9f12",
+          "method": "POST",
+          "path": "/api/drafts",
+          "status": 403,
+          "created_at": "2026-11-06T20:23:34.124Z"
+        }
+      ]
+    },
+    {
+      "title": "Windows Qwen autumn campaign 2026-11-06",
+      "operationId": "8158fc1f-f44c-4bdf-88e5-de9c82d36c1e",
+      "model": "qwen3:4b-instruct-2507-q4_K_M",
+      "status": "failed",
+      "elapsedMs": 60635.471999999994,
+      "failure": {
+        "message": "Error: Proxy HTTP 502: {\"error\":\"Model server unavailable or returned an invalid response. Start a tool-capable model and check MODEL_BASE_URL and MODEL_NAME.\"}",
+        "stack": "Error: Proxy HTTP 502: {\"error\":\"Model server unavailable or returned an invalid response. Start a tool-capable model and check MODEL_BASE_URL and MODEL_NAME.\"}\n    at step (file:///C:/Users/jackw/Documents/dev/deedspan/artifacts/windows-qwen-explicit-uuid/run.mjs:160:19)\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\n    at async executeTask (C:\\Users\\jackw\\Documents\\dev\\deedspan\\src\\core\\execute-task.ts:24:19)\n    at async file:///C:/Users/jackw/Documents/dev/deedspan/artifacts/windows-qwen-explicit-uuid/run.mjs:121:17"
+      },
+      "before": [],
+      "after": [],
+      "approvals": [],
+      "traces": [
+        {
+          "id": "d273b844-a516-498c-b795-54c1ec19d1ca",
+          "name": "create_draft",
+          "input": {
+            "title": "Windows Qwen autumn campaign 2026-11-06",
+            "operationId": "8158fc1f-f4_4c-4bdf-88e5-de9c82d36c1e",
+            "projectId": "Marketing"
+          },
+          "output": {
+            "error": "[\n  {\n    \"origin\": \"string\",\n    \"code\": \"invalid_format\",\n    \"format\": \"uuid\",\n    \"pattern\": \"/^([0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[1-8][0-9a-fA-F]{3}-[89abAB][0-9a-fA-F]{3}-[0-9a-fA-F]{12}|00000000-0000-0000-0000-000000000000|ffffffff-ffff-ffff-ffff-ffffffffffff)$/\",\n    \"path\": [\n      \"operationId\"\n    ],\n    \"message\": \"Invalid UUID\"\n  }\n]"
+          },
+          "status": "error",
+          "durationMs": 0.15
+        }
+      ],
+      "events": [],
+      "calls": [
+        {
+          "id": "2ade70ef-bb08-419f-a56b-162be68575ec",
+          "operation_id": "d4e8f2a1-1b7c-4a90-8c3e-2b0a5d7e9f12",
+          "method": "POST",
+          "path": "/api/drafts",
+          "status": 403,
+          "created_at": "2026-11-06T20:23:34.124Z"
+        }
+      ]
+    }
+  ]
+}

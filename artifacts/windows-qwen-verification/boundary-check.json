@@ -1,0 +1,36 @@
+{
+  "requests": 10,
+  "responses": 10,
+  "allHttp200": true,
+  "allRequestsRequireOperationId": true,
+  "rawCreateCalls": [
+    {
+      "name": "create_draft",
+      "arguments": {
+        "projectId": "marketing",
+        "title": "Windows Qwen launch notes 2026-11-06"
+      }
+    },
+    {
+      "name": "create_draft",
+      "arguments": {
+        "projectId": "marketing",
+        "title": "Windows Qwen launch notes 2026-11-06"
+      }
+    },
+    {
+      "name": "create_draft",
+      "arguments": {
+        "projectId": "marketing",
+        "title": "Windows Qwen autumn campaign 2026-11-06"
+      }
+    },
+    {
+      "name": "create_draft",
+      "arguments": {
+        "projectId": "marketing",
+        "title": "Windows Qwen autumn campaign 2026-11-06"
+      }
+    }
+  ]
+}
