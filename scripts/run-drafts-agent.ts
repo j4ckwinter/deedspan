@@ -39,7 +39,9 @@ const taskSchema = z
     operationId: z.uuid(),
     title: z.string().trim().min(1).max(200),
     origin: z.url(),
-    before: z.array(draftSchema),
+    before: z.array(
+      draftSchema.extend({ version: draftSchema.shape.version.optional() }),
+    ),
   })
   .strict();
 const resumed = values.resume

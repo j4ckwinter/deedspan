@@ -31,6 +31,8 @@
     "preexample:agent": "npm run build:sdk",
     "model:check": "node --import tsx scripts/verify-drafts-model.ts",
     "premodel:check": "npm run build:sdk",
+    "model:check:update": "node --import tsx scripts/verify-draft-update-model.ts",
+    "premodel:check:update": "npm run build:sdk",
     "example:install": "node scripts/install-example.mjs"
   },
   "devDependencies": {

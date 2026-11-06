@@ -187,6 +187,14 @@ The default `artifacts/model-checks/` directory is ignored by Git. Keep reports 
 
 Use an otherwise idle local example during this check. The run creates persistent data and sends tool inputs and outputs to the configured model provider. `DRAFTS_ORIGIN` and `WORKBENCH_ORIGIN` override the local application URLs. No model is bundled; live inference and external developer adoption remain validation steps requiring an available model and another developer.
 
+The independent example also supports finding an existing draft, approving a title update, and retrieving its saved version. Rejected requests leave the record unchanged; stale versions produce a conflict, and retries reuse the original operation. See the [update workflow](examples/drafts/README.md#updating-an-existing-draft) for browser controls and SDK registrations.
+
+```sh
+npm run model:check:update -- --model panky-qwen3:4b
+```
+
+This runs two isolated update trials with different new titles and automated test-operator approval. It records the model/version, raw responses, traces, and persisted results. It checks that exactly one version increment occurs and unrelated records remain unchanged. It does not measure human approval or replace repeated reliability trials.
+
 ## Scenarios and reports
 
 A scenario contains a natural-language task and independent expectations for draft title, project, and count. The fixture is `launch-notes-v1`: Marketing and Engineering projects with no drafts. Reports include the prompt, model or scripted identity, tool schemas, initial/final snapshots, calls, errors, timings, and assertions.

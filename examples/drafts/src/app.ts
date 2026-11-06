@@ -1,7 +1,7 @@
 import { randomBytes } from 'node:crypto';
 import express from 'express';
 import { z } from 'zod';
-import { createDraftSchema } from './contracts.js';
+import { createDraftSchema, updateDraftSchema } from './contracts.js';
 import { AppError, DraftStore, type User } from './store.js';
 
 interface Session {
@@ -117,6 +117,30 @@ export function createApp(store: DraftStore, origin: string) {
   });
   app.get('/api/approvals', (_req, res) => {
     res.json(store.pending(user(res)));
+  });
+  app.get('/api/draft-updates/approvals', (_req, res) => {
+    res.json(store.pendingUpdates(user(res)));
+  });
+  app.post('/api/draft-updates', (req, res) => {
+    const parsed = updateDraftSchema.safeParse(req.body);
+    if (!parsed.success)
+      throw new AppError(400, 'Invalid draft update request');
+    const operation = store.update(user(res), parsed.data);
+    res.json({
+      operationId: operation.id,
+      status:
+        operation.status === 'pending' || operation.status === 'approved'
+          ? 'confirmation_required'
+          : operation.status,
+      draftId: operation.draft_id,
+      version: operation.result_version,
+    });
+  });
+  app.post('/api/draft-updates/:id/approve', (req, res) => {
+    res.json(store.decideUpdate(user(res), String(req.params.id), 'approve'));
+  });
+  app.post('/api/draft-updates/:id/reject', (req, res) => {
+    res.json(store.decideUpdate(user(res), String(req.params.id), 'reject'));
   });
   app.get('/api/calls', (_req, res) => {
     res.json(store.calls(user(res)));

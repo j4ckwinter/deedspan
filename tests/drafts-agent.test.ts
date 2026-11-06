@@ -11,6 +11,7 @@ import { DraftStore } from '../examples/drafts/src/store.js';
 import { agentRequestSchema } from '../src/core/types.js';
 import {
   createDraftResultSchema,
+  draftSchema,
   draftsSchema,
 } from '../examples/drafts/src/contracts.js';
 
@@ -19,7 +20,9 @@ const manifestSchema = z.object({
   operationId: z.uuid(),
   title: z.string(),
   origin: z.url(),
-  before: draftsSchema,
+  before: z.array(
+    draftSchema.extend({ version: draftSchema.shape.version.optional() }),
+  ),
 });
 const taskLocationSchema = z.object({
   taskFile: z.string(),
@@ -237,6 +240,22 @@ test('a durable agent task survives approval and backend restarts without duplic
     assert.match(secondResume.stdout, /"status": "passed"/);
     assert.equal(store.drafts(alice).length, 2);
     assert.equal(new Set(store.drafts(alice).map((draft) => draft.id)).size, 2);
+
+    const legacyTaskFile = join(runDirectory, 'legacy-task.json');
+    await writeFile(
+      legacyTaskFile,
+      JSON.stringify({
+        ...otherManifest,
+        before: otherManifest.before.map(({ id, project_id, title }) => ({
+          id,
+          project_id,
+          title,
+        })),
+      }),
+    );
+    const legacyResume = await run(['--resume', legacyTaskFile]);
+    assert.equal(legacyResume.error, null, legacyResume.stderr);
+    assert.equal(store.drafts(alice).length, 2);
 
     selected.length = 0;
     const firstAfterSecond = await run(['--resume', task.taskFile]);

@@ -43,11 +43,29 @@
               maxlength="200" /></label
           ><button>Request draft</button>
         </form>
+        <h2>Update a draft title</h2>
+        <form id="find-drafts">
+          <label
+            >Find drafts <input id="draft-query" maxlength="200" required
+          /></label>
+          <button>Find drafts</button>
+        </form>
+        <form id="update">
+          <label
+            >Existing draft
+            <select id="update-draft" required></select
+          ></label>
+          <label
+            >New title <input id="update-title" required maxlength="200"
+          /></label>
+          <button id="request-update" disabled>Request update</button>
+        </form>
         <h2>Awaiting your approval</h2>
         <button id="refresh" type="button">
           Refresh requests and outcomes
         </button>
         <div id="approvals"></div>
+        <div id="update-approvals"></div>
         <h2>Saved drafts</h2>
         <ul id="drafts"></ul>
         <h2>Operation outcomes</h2>

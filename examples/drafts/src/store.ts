@@ -5,6 +5,11 @@ import {
   timingSafeEqual,
 } from 'node:crypto';
 import { DatabaseSync } from 'node:sqlite';
+import {
+  draftSchema,
+  updateOperationSchema,
+  type UpdateDraftInput,
+} from './contracts.js';
 
 export class AppError extends Error {
   constructor(
@@ -38,7 +43,18 @@ export class DraftStore {
       CREATE TABLE IF NOT EXISTS operations(id TEXT PRIMARY KEY, user_id TEXT REFERENCES users(id), project_id TEXT REFERENCES projects(id), title TEXT NOT NULL, status TEXT NOT NULL, draft_id TEXT REFERENCES drafts(id));
       CREATE TABLE IF NOT EXISTS calls(id TEXT PRIMARY KEY, user_id TEXT NOT NULL, operation_id TEXT, method TEXT NOT NULL, path TEXT NOT NULL, status INTEGER NOT NULL, created_at TEXT NOT NULL);
       CREATE TABLE IF NOT EXISTS events(id TEXT PRIMARY KEY, user_id TEXT NOT NULL, operation_id TEXT, outcome TEXT NOT NULL, draft_id TEXT, created_at TEXT NOT NULL);
+      CREATE TABLE IF NOT EXISTS draft_updates(id TEXT PRIMARY KEY, user_id TEXT NOT NULL REFERENCES users(id), project_id TEXT NOT NULL REFERENCES projects(id), draft_id TEXT NOT NULL REFERENCES drafts(id), expected_version INTEGER NOT NULL, previous_title TEXT NOT NULL, title TEXT NOT NULL, status TEXT NOT NULL, result_version INTEGER);
     `);
+    if (
+      !this.db
+        .prepare('PRAGMA table_info(drafts)')
+        .all()
+        .some((column) => column.name === 'version')
+    ) {
+      this.db.exec(
+        'ALTER TABLE drafts ADD COLUMN version INTEGER NOT NULL DEFAULT 1',
+      );
+    }
   }
   seed(password: string) {
     for (const [id, name] of [
@@ -89,7 +105,7 @@ export class DraftStore {
   }
   private event(
     user: User,
-    operation: Operation,
+    operation: Pick<Operation, 'id'>,
     outcome: string,
     draftId: string | null = null,
   ) {
@@ -111,6 +127,15 @@ export class DraftStore {
     this.requireAccess(user, input.projectId);
     this.db.exec('BEGIN IMMEDIATE');
     try {
+      if (
+        this.db
+          .prepare('SELECT 1 FROM draft_updates WHERE id = ?')
+          .get(input.operationId)
+      )
+        throw new AppError(
+          409,
+          'Operation ID already used for different input',
+        );
       const existing = this.db
         .prepare('SELECT * FROM operations WHERE id = ?')
         .get(input.operationId) as unknown as Operation | undefined;
@@ -140,7 +165,9 @@ export class DraftStore {
       if (operation.status === 'approved') {
         const draftId = randomUUID();
         this.db
-          .prepare('INSERT INTO drafts VALUES (?, ?, ?)')
+          .prepare(
+            'INSERT INTO drafts (id, project_id, title) VALUES (?, ?, ?)',
+          )
           .run(draftId, input.projectId, input.title);
         this.db
           .prepare(
@@ -178,7 +205,138 @@ export class DraftStore {
     const draft = this.db.prepare('SELECT * FROM drafts WHERE id = ?').get(id);
     if (!draft) throw new AppError(404, 'Draft not found');
     this.requireAccess(user, String(draft.project_id));
-    return draft;
+    return draftSchema.parse(draft);
+  }
+  private updateOperation(user: User, id: string) {
+    const row = this.db
+      .prepare('SELECT * FROM draft_updates WHERE id = ? AND user_id = ?')
+      .get(id, user.id);
+    if (!row) throw new AppError(404, 'Update operation not found');
+    const operation = updateOperationSchema.parse(row);
+    this.requireAccess(user, operation.project_id);
+    return operation;
+  }
+  update(user: User, input: UpdateDraftInput) {
+    this.db.exec('BEGIN IMMEDIATE');
+    try {
+      const draft = this.draft(user, input.draftId);
+      if (
+        this.db
+          .prepare('SELECT 1 FROM operations WHERE id = ?')
+          .get(input.operationId)
+      )
+        throw new AppError(
+          409,
+          'Operation ID already used for different input',
+        );
+      const row = this.db
+        .prepare('SELECT * FROM draft_updates WHERE id = ?')
+        .get(input.operationId);
+      const existing = row ? updateOperationSchema.parse(row) : undefined;
+      if (
+        existing &&
+        (existing.user_id !== user.id ||
+          existing.draft_id !== input.draftId ||
+          existing.expected_version !== input.expectedVersion ||
+          existing.title !== input.title)
+      )
+        throw new AppError(
+          409,
+          'Operation ID already used for different input',
+        );
+      if (!existing) {
+        const status =
+          draft.version === input.expectedVersion ? 'pending' : 'conflict';
+        this.db
+          .prepare(
+            'INSERT INTO draft_updates VALUES (?, ?, ?, ?, ?, ?, ?, ?, NULL)',
+          )
+          .run(
+            input.operationId,
+            user.id,
+            draft.project_id,
+            draft.id,
+            input.expectedVersion,
+            draft.title,
+            input.title,
+            status,
+          );
+        this.event(
+          user,
+          { id: input.operationId },
+          status === 'pending'
+            ? 'update_confirmation_required'
+            : 'update_conflict',
+          draft.id,
+        );
+      }
+      const operation = this.updateOperation(user, input.operationId);
+      if (operation.status === 'approved') {
+        if (draft.version !== operation.expected_version) {
+          this.db
+            .prepare(
+              "UPDATE draft_updates SET status = 'conflict' WHERE id = ?",
+            )
+            .run(operation.id);
+          this.event(user, operation, 'update_conflict', draft.id);
+        } else {
+          this.db
+            .prepare(
+              'UPDATE drafts SET title = ?, version = version + 1 WHERE id = ? AND version = ?',
+            )
+            .run(operation.title, draft.id, operation.expected_version);
+          this.db
+            .prepare(
+              "UPDATE draft_updates SET status = 'completed', result_version = ? WHERE id = ?",
+            )
+            .run(draft.version + 1, operation.id);
+          this.event(user, operation, 'update_completed', draft.id);
+        }
+      }
+      const result = this.updateOperation(user, input.operationId);
+      this.db.exec('COMMIT');
+      return result;
+    } catch (error) {
+      this.db.exec('ROLLBACK');
+      throw error;
+    }
+  }
+  decideUpdate(user: User, id: string, decision: 'approve' | 'reject') {
+    this.db.exec('BEGIN IMMEDIATE');
+    try {
+      const operation = this.updateOperation(user, id);
+      if (
+        decision === 'reject' &&
+        (operation.status === 'approved' || operation.status === 'completed')
+      )
+        throw new AppError(409, 'An approved update cannot be rejected');
+      if (operation.status === 'pending') {
+        const status =
+          decision === 'reject'
+            ? 'rejected'
+            : this.draft(user, operation.draft_id).version ===
+                operation.expected_version
+              ? 'approved'
+              : 'conflict';
+        this.db
+          .prepare('UPDATE draft_updates SET status = ? WHERE id = ?')
+          .run(status, id);
+        this.event(user, operation, `update_${status}`, operation.draft_id);
+      }
+      const result = this.updateOperation(user, id);
+      this.db.exec('COMMIT');
+      return result;
+    } catch (error) {
+      this.db.exec('ROLLBACK');
+      throw error;
+    }
+  }
+  pendingUpdates(user: User) {
+    return this.db
+      .prepare(
+        "SELECT u.* FROM draft_updates u JOIN memberships m ON u.project_id = m.project_id AND u.user_id = m.user_id WHERE u.user_id = ? AND u.status IN ('pending', 'approved')",
+      )
+      .all(user.id);
   }
   drafts(user: User) {
     return this.db

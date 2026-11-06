@@ -33,6 +33,22 @@ The task's `get_draft` tool takes an empty object and uses the ID from its compl
 
 The CLI requires successful Marketing discovery before any creation attempt, including after a resume. From the repository root, `npm run model:check -- --model panky-qwen3:4b` runs repeatable checks against an isolated backend with explicitly labeled automated approvals. See the root README for custom titles, local endpoint settings and evidence output.
 
+## Updating an existing draft
+
+After creating a draft, use **Update a draft** to find it by title. Select the record and request a new title. The approval shows the old title, new title, project, and version. Approve to apply and retrieve the saved change, or reject to leave the draft unchanged. Approved requests remain visible for retry if a write is interrupted.
+
+`registerDraftUpdateTools` exposes `search_drafts`, `update_draft`, and `get_updated_draft` through the same SDK. Approval and rejection remain application controls, not tools. Updates use a separate persisted operation with an immutable draft ID, expected version, and title. Replays return the original outcome; changing input under the same operation ID fails. Rejection is final. If another update changes the record before approval or execution, the request ends in a conflict without overwriting that change. Existing databases acquire version 1 for existing drafts on startup.
+
+`registerDraftUpdateTaskTools(registry, request, { operationId, title, query })` binds the search and replacement title for an agent task. The model discovers matching drafts, selects an ID, retries after approval, and retrieves with no arguments. The registration retains the first selected version across retries and verifies the saved title/version on retrieval. This update task adapter keeps its selection in memory; it does not provide the creation CLI's saved-task/resume interface. The general update API can replay a persisted exact request after restart.
+
+From the repository root, run two isolated local-model trials:
+
+```sh
+npm run model:check:update -- --model panky-qwen3:4b
+```
+
+Each trial seeds an existing draft and an unrelated record, then checks discovery, approval before mutation, one version increment, and model-issued retrieval. The test operator approves automatically; this is not a human approval test. Optional positional arguments replace the two default new titles. `--ollama` accepts a loopback HTTP origin and `--output` selects an evidence directory. Reports retain model identity, raw responses, traces, approval, and final state under ignored `artifacts/model-checks/` by default. Rejection and conflict behavior are covered separately by API and browser tests.
+
 ## Checks
 
 ```sh
