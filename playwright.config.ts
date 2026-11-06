@@ -8,10 +8,22 @@ export default defineConfig({
     trace: 'retain-on-failure',
     viewport: { width: 1440, height: 1000 },
   },
-  webServer: {
-    command: 'npm run dev',
-    url: 'http://127.0.0.1:3100',
-    env: { PORT: '3100' },
-    reuseExistingServer: false,
-  },
+  webServer: [
+    {
+      command: 'npm run dev',
+      url: 'http://127.0.0.1:3100',
+      env: { PORT: '3100' },
+      reuseExistingServer: false,
+    },
+    {
+      command: 'npm --prefix examples/drafts run dev',
+      url: 'http://127.0.0.1:3102',
+      env: {
+        DRAFTS_PORT: '3102',
+        DRAFTS_DB: ':memory:',
+        DRAFTS_PASSWORD: 'browser-test-password',
+      },
+      reuseExistingServer: false,
+    },
+  ],
 });

@@ -1,0 +1,48 @@
+body {
+  font:
+    16px system-ui,
+    sans-serif;
+  margin: 0;
+  color: #20312c;
+  background: #f4f6f2;
+}
+main {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 24px;
+}
+form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  align-items: end;
+}
+label {
+  display: grid;
+  gap: 5px;
+}
+input,
+select,
+button {
+  font: inherit;
+  padding: 9px;
+  border: 1px solid #8a9b91;
+  border-radius: 5px;
+}
+button {
+  background: #1b5546;
+  color: white;
+  cursor: pointer;
+}
+pre {
+  overflow: auto;
+  padding: 16px;
+  background: white;
+  border: 1px solid #ddd;
+}
+#status {
+  min-height: 24px;
+}
+[hidden] {
+  display: none;
+}

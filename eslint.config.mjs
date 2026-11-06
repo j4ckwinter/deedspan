@@ -7,7 +7,7 @@ import reactHooks from 'eslint-plugin-react-hooks';
 
 export default defineConfig(
   globalIgnores([
-    'dist/**',
+    '**/dist/**',
     'lib/**',
     'coverage/**',
     'playwright-report/**',

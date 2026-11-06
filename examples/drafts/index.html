@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Short Stack · Drafts integration</title>
+  </head>
+  <body>
+    <main>
+      <h1>Drafts integration</h1>
+      <p>An independent application using the installed Short Stack SDK.</p>
+      <form id="login">
+        <label
+          >Username
+          <input
+            name="username"
+            value="alice"
+            autocomplete="username"
+            required /></label
+        ><label
+          >Password
+          <input
+            name="password"
+            type="password"
+            autocomplete="current-password"
+            required /></label
+        ><button>Sign in</button>
+      </form>
+      <p id="status" role="status"></p>
+      <section id="workspace" hidden>
+        <button id="logout" type="button">Sign out</button>
+        <h2>Create a draft</h2>
+        <form id="create">
+          <label
+            >Project
+            <select name="project"></select></label
+          ><label
+            >Title
+            <input
+              name="title"
+              value="November launch notes"
+              required
+              maxlength="200" /></label
+          ><button>Request draft</button>
+        </form>
+        <h2>Awaiting your approval</h2>
+        <button id="refresh" type="button">
+          Refresh requests and outcomes
+        </button>
+        <div id="approvals"></div>
+        <h2>Saved drafts</h2>
+        <ul id="drafts"></ul>
+        <h2>Operation outcomes</h2>
+        <pre id="events"></pre>
+        <h2>SDK traces</h2>
+        <pre id="traces"></pre>
+      </section>
+    </main>
+    <script type="module" src="/src/client.ts"></script>
+  </body>
+</html>
