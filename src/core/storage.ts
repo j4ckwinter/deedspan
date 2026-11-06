@@ -18,10 +18,12 @@ export interface SavedState {
   runs: RunReport[];
   warning: string | null;
 }
-export const storageKey = 'short-stack.workbench.v1';
+export const storageKey = 'deedspan.workbench.v1';
 export function loadState(storage: Pick<Storage, 'getItem'>): SavedState {
   try {
-    const raw = storage.getItem(storageKey);
+    const raw =
+      storage.getItem(storageKey) ??
+      storage.getItem('short-stack.workbench.v1');
     if (!raw)
       return {
         scenarios: [structuredClone(defaultScenario)],

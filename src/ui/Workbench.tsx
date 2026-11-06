@@ -54,14 +54,10 @@ export function Workbench(props: WorkbenchProps) {
   return (
     <div className="workbench">
       <aside className="sidebar">
-        <a
-          className="brand"
-          href="#workspace"
-          aria-label="Short Stack workspace"
-        >
+        <a className="brand" href="#workspace" aria-label="Deedspan workspace">
           <StackMark />
           <span>
-            short stack<span className="brand-period">.</span>
+            deedspan<span className="brand-period">.</span>
           </span>
         </a>
         <div className="workspace-label">
@@ -432,7 +428,7 @@ export function Workbench(props: WorkbenchProps) {
             </section>
           )}
           <footer className="workspace-footer">
-            <span>short stack.</span>
+            <span>deedspan.</span>
             <p>Expose actions. Verify outcomes. Catch regressions.</p>
             <span>Built for the agentic web</span>
           </footer>

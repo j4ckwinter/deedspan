@@ -4,7 +4,7 @@ import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 
 const root = resolve(import.meta.dirname, '..');
-const directory = await mkdtemp(join(tmpdir(), 'short-stack-example-'));
+const directory = await mkdtemp(join(tmpdir(), 'deedspan-example-'));
 try {
   runNpm(['run', 'build:sdk'], { cwd: root, stdio: 'inherit' });
   const [packed] = Object.values(

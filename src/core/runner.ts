@@ -6,7 +6,7 @@ import type {
   Scenario,
   Snapshot,
 } from './types.js';
-import type { ToolClient } from 'short-stack';
+import type { ToolClient } from 'deedspan';
 import { executeTask } from './execute-task.js';
 
 export interface ScenarioFixture {

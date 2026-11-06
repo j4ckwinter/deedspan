@@ -7,7 +7,7 @@ import { join, resolve } from 'node:path';
 
 const root = resolve(import.meta.dirname, '..');
 const manifest = JSON.parse(await readFile(join(root, 'package.json'), 'utf8'));
-const directory = await mkdtemp(join(tmpdir(), 'short-stack-package-'));
+const directory = await mkdtemp(join(tmpdir(), 'deedspan-package-'));
 const run = (command, args, cwd = directory) =>
   command === 'npm'
     ? runNpm(args, { cwd, stdio: 'pipe' })
@@ -53,7 +53,7 @@ try {
   await writeFile(
     join(consumer, 'core.ts'),
     `import assert from 'node:assert/strict';
-import { ToolRegistry, type ToolTrace } from 'short-stack';
+import { ToolRegistry, type ToolTrace } from 'deedspan';
 import { z } from 'zod';
 const registry = new ToolRegistry();
 registry.register({ name: 'greet', description: 'Greet someone', input: z.object({name: z.string()}), execute: ({name}) => ({message: 'Hello ' + name}) });
@@ -85,8 +85,8 @@ assert.equal((await registry.call('greet', {name: 1})).status, 'error');
   );
   await writeFile(
     join(consumer, 'react.ts'),
-    `import { useRegisteredTool } from 'short-stack/react';
-import { ToolRegistry } from 'short-stack';
+    `import { useRegisteredTool } from 'deedspan/react';
+import { ToolRegistry } from 'deedspan';
 import { z } from 'zod';
 export function Component() {
   useRegisteredTool(new ToolRegistry(), {name: 'noop', description: 'No operation', input: z.object({}), execute: () => null});

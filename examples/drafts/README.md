@@ -1,6 +1,6 @@
 # Independent drafts application
 
-This application installs Short Stack as a package. `example:install` builds a tarball and installs it without changing the example manifest; rerun it after SDK changes. The manifest’s local dependency also supports linked development with `npm install --prefix examples/drafts`. Its authenticated API and SQLite database own the projects, permissions, approvals and drafts; browser tools call that API.
+This application installs Deedspan as a package. `example:install` builds a tarball and installs it without changing the example manifest; rerun it after SDK changes. The manifest’s local dependency also supports linked development with `npm install --prefix examples/drafts`. Its authenticated API and SQLite database own the projects, permissions, approvals and drafts; browser tools call that API.
 
 From the repository root:
 

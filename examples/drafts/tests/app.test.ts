@@ -10,7 +10,7 @@ import { DraftStore } from '../src/store.js';
 
 const password = 'example-password-for-tests';
 async function fixture() {
-  const directory = mkdtempSync(join(tmpdir(), 'short-stack-drafts-'));
+  const directory = mkdtempSync(join(tmpdir(), 'deedspan-drafts-'));
   const store = new DraftStore(join(directory, 'drafts.sqlite'));
   store.seed(password);
   const server = createServer();

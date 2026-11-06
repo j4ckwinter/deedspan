@@ -1,4 +1,4 @@
-import { type ToolRegistry } from 'short-stack';
+import { type ToolRegistry } from 'deedspan';
 import { z } from 'zod';
 import { createDraftSchema } from './contracts.js';
 

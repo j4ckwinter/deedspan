@@ -158,6 +158,11 @@ test('saved scenarios and traces survive storage; corrupt data is handled visibl
   const report = await run();
   saveState(storage, [defaultScenario], [report]);
   assert.deepEqual(loadState(storage).runs, [report]);
+  values.set('short-stack.workbench.v1', values.get(storageKey)!);
+  values.delete(storageKey);
+  assert.deepEqual(loadState(storage).runs, [report]);
+  saveState(storage, [defaultScenario], []);
+  assert.deepEqual(loadState(storage).runs, []);
   values.set(storageKey, '{bad json');
   assert.match(loadState(storage).warning ?? '', /could not be read/);
 });

@@ -1,4 +1,4 @@
-# Short Stack
+# Deedspan
 
 A TypeScript SDK for exposing application actions to agents, with validation, application-owned access checks, and execution traces. The repository includes a local workbench and a separate persistent draft application.
 
@@ -74,19 +74,19 @@ Windows CI covers setup, package installation, type checks and backend tests. A 
 
 ## Register application tools
 
-The SDK has compiled JavaScript and TypeScript declarations, with core (`short-stack`) and React (`short-stack/react`) entry points. It is not published to npm. Build a tarball locally and install the resulting file in another application:
+The SDK has compiled JavaScript and TypeScript declarations, with core (`deedspan`) and React (`deedspan/react`) entry points. It is not published to npm. Build a tarball locally and install the resulting file in another application:
 
 ```sh
 npm pack --pack-destination /tmp
 # In your application:
-npm install /tmp/short-stack-0.0.0.tgz
+npm install /tmp/deedspan-0.0.0.tgz
 ```
 
 `npm run test:package` verifies an actual tarball installation outside this repository, including runtime behavior and TypeScript declarations. The core package does not require React.
 
 ```ts
 import { z } from 'zod';
-import { ToolRegistry, connectWebMCP } from 'short-stack';
+import { ToolRegistry, connectWebMCP } from 'deedspan';
 
 const tools = new ToolRegistry();
 const unregister = tools.register({
@@ -107,7 +107,7 @@ unregister();
 
 `searchProducts` and `currentUser` represent your application's existing function and access check. Execute the same checks in the backend that owns protected data; browser callbacks do not replace server authorization.
 
-The registry validates inputs with Zod, generates JSON Schemas, checks authorization per call, and captures JSON snapshots of inputs and results. Tool arguments and results must be JSON serializable. React integrations can use `useRegisteredTool` from `short-stack/react`.
+The registry validates inputs with Zod, generates JSON Schemas, checks authorization per call, and captures JSON snapshots of inputs and results. Tool arguments and results must be JSON serializable. React integrations can use `useRegisteredTool` from `deedspan/react`.
 
 Tool handlers and authorization callbacks receive `(input, context)`. `context.callId` matches the returned trace ID; pass it to your backend to correlate an attempt with its operation and saved result. It is diagnostic metadata, not an identity, permission, or idempotency key.
 
@@ -184,3 +184,5 @@ Install the test browser once with `npx playwright install chromium`. Browser te
 GitHub Actions runs checks, builds, and browser tests. Make focused Conventional Commits at working milestones after the relevant checks pass.
 
 `PRODUCT_DIRECTION.md` remains ignored. The minimatch override pins affected transitive versions to 11.0.5 for [GHSA-g3hv-75wg-m249](https://github.com/advisories/GHSA-g3hv-75wg-m249). Remove it once upstream dependencies select patched versions themselves.
+
+Existing workbench scenarios and reports saved under the former Short Stack name are loaded when no Deedspan data exists. Subsequent saves use the Deedspan storage key.

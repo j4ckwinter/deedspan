@@ -1,8 +1,8 @@
 import { z } from 'zod';
 
-import { toolDescriptorSchema, toolTraceSchema } from 'short-stack';
-export { toolDescriptorSchema, toolTraceSchema } from 'short-stack';
-export type { ToolDescriptor, ToolTrace } from 'short-stack';
+import { toolDescriptorSchema, toolTraceSchema } from 'deedspan';
+export { toolDescriptorSchema, toolTraceSchema } from 'deedspan';
+export type { ToolDescriptor, ToolTrace } from 'deedspan';
 
 export const snapshotSchema = z.object({
   projects: z.array(z.object({ id: z.string(), name: z.string() })),

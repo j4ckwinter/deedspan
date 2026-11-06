@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { createRoot } from 'react-dom/client';
 import { z } from 'zod';
 import { createDemo } from './demo/store.js';
-import { connectWebMCP } from 'short-stack';
+import { connectWebMCP } from 'deedspan';
 import { runScenario } from './core/runner.js';
 import { scriptedStep, modelStep } from './core/agents.js';
 import { loadState, saveState, savedStateLimits } from './core/storage.js';

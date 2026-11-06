@@ -46,7 +46,7 @@ export function RunReportView({
         <button
           className="button-secondary"
           type="button"
-          onClick={() => exportJson(run, `short-stack-${run.id}.json`)}
+          onClick={() => exportJson(run, `deedspan-${run.id}.json`)}
         >
           Export JSON <span aria-hidden="true">↗</span>
         </button>

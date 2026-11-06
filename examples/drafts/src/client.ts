@@ -1,4 +1,4 @@
-import { ToolRegistry, connectWebMCP } from 'short-stack';
+import { ToolRegistry, connectWebMCP } from 'deedspan';
 import {
   draftsSchema,
   operationsSchema,

@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict';
 import test from 'node:test';
-import { ToolRegistry } from 'short-stack';
+import { ToolRegistry } from 'deedspan';
 import { registerDraftTools } from '../src/tools.js';
 
 test('a failed UI refresh cannot discard a completed operation result', async () => {

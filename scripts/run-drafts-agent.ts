@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict';
 import { createInterface } from 'node:readline/promises';
 import { stdin, stdout } from 'node:process';
-import { ToolRegistry, type ToolTrace } from 'short-stack';
+import { ToolRegistry, type ToolTrace } from 'deedspan';
 import { z } from 'zod';
 import {
   registerDraftTools,
