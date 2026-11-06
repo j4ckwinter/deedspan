@@ -12,3 +12,4 @@ playwright-report/
 test-results/
 scenario-report.json
 lib/
+.data/draft-agent/

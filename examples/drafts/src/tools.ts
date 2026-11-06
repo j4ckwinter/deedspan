@@ -8,6 +8,36 @@ export type DraftRequest = (
   callId?: string,
 ) => Promise<unknown>;
 export function registerDraftTools(tools: ToolRegistry, request: DraftRequest) {
+  registerProjectTool(tools, request);
+  tools.register({
+    name: 'create_draft',
+    description:
+      'Request a draft in a project. Generate a UUID operationId and reuse it with identical input on retries. If confirmation_required, ask the user to approve the exact operation in the application, then retry. Never approve on their behalf.',
+    input: createDraftSchema,
+    execute: (input, context) => request('/drafts', input, context.callId),
+  });
+  registerGetDraftTool(tools, request);
+}
+
+export function registerDraftTaskTools(
+  tools: ToolRegistry,
+  request: DraftRequest,
+  operationId: string,
+) {
+  const id = z.uuid().parse(operationId);
+  registerProjectTool(tools, request);
+  tools.register({
+    name: 'create_draft',
+    description:
+      'Request a draft in a project. The application manages operation IDs and reuses them on retries. If confirmation_required, ask the user to approve the exact operation in the application, then retry. Never approve on their behalf.',
+    input: createDraftSchema.omit({ operationId: true }),
+    execute: (input, context) =>
+      request('/drafts', { ...input, operationId: id }, context.callId),
+  });
+  registerGetDraftTool(tools, request);
+}
+
+function registerProjectTool(tools: ToolRegistry, request: DraftRequest) {
   const empty = z.object({}).strict();
   tools.register({
     name: 'search_projects',
@@ -16,13 +46,9 @@ export function registerDraftTools(tools: ToolRegistry, request: DraftRequest) {
     execute: (_input, context) =>
       request('/projects', undefined, context.callId),
   });
-  tools.register({
-    name: 'create_draft',
-    description:
-      'Request a draft in a project. Generate a UUID operationId and reuse it with identical input on retries. If confirmation_required, ask the user to approve the exact operation in the application, then retry. Never approve on their behalf.',
-    input: createDraftSchema,
-    execute: (input, context) => request('/drafts', input, context.callId),
-  });
+}
+
+function registerGetDraftTool(tools: ToolRegistry, request: DraftRequest) {
   tools.register({
     name: 'get_draft',
     description: 'Retrieve a persisted draft by ID to verify the outcome.',

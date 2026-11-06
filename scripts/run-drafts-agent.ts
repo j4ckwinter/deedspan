@@ -1,16 +1,20 @@
 import assert from 'node:assert/strict';
 import { createInterface } from 'node:readline/promises';
 import { stdin, stdout } from 'node:process';
+import { mkdirSync, readFileSync, writeFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { parseArgs } from 'node:util';
 import { ToolRegistry, type ToolTrace } from 'deedspan';
 import { z } from 'zod';
 import {
-  registerDraftTools,
+  registerDraftTaskTools,
   type DraftRequest,
 } from '../examples/drafts/src/tools.js';
 import {
   draftSchema,
   sessionSchema,
   errorSchema,
+  createDraftResultSchema,
 } from '../examples/drafts/src/contracts.js';
 import { executeTask } from '../src/core/execute-task.js';
 import { agentReplySchema } from '../src/core/types.js';
@@ -22,7 +26,31 @@ if (!password)
   throw new Error(
     'Set DRAFTS_PASSWORD to the password used to seed the example.',
   );
-const title = process.argv[2] ?? `Agent integration ${crypto.randomUUID()}`;
+const { values, positionals } = parseArgs({
+  options: { resume: { type: 'string' } },
+  allowPositionals: true,
+});
+if (positionals.length > 1 || (values.resume && positionals.length))
+  throw new Error('Use a draft title or --resume <task-file>, not both.');
+const taskSchema = z
+  .object({
+    version: z.literal(1),
+    operationId: z.uuid(),
+    title: z.string().trim().min(1).max(200),
+    origin: z.url(),
+    before: z.array(draftSchema),
+  })
+  .strict();
+const resumed = values.resume
+  ? taskSchema.parse(JSON.parse(readFileSync(resolve(values.resume), 'utf8')))
+  : undefined;
+if (resumed && resumed.origin !== origin)
+  throw new Error('Saved task belongs to a different DRAFTS_ORIGIN.');
+const title = taskSchema.shape.title.parse(
+  resumed?.title ??
+    positionals[0] ??
+    `Agent integration ${crypto.randomUUID()}`,
+);
 const login = await fetch(`${origin}/api/login`, {
   method: 'POST',
   headers: { 'Content-Type': 'application/json', Origin: origin },
@@ -50,13 +78,35 @@ const request: DraftRequest = async (path, body, callId) => {
   if (!response.ok) throw new Error(errorSchema.parse(result).error);
   return result;
 };
-const before = z.array(draftSchema).parse(await request('/drafts'));
+const task =
+  resumed ??
+  taskSchema.parse({
+    version: 1,
+    operationId: crypto.randomUUID(),
+    title,
+    origin,
+    before: await request('/drafts'),
+  });
+const taskDirectory = resolve(
+  process.env.DRAFTS_RUN_DIR ?? '.data/draft-agent',
+);
+const taskFile = values.resume
+  ? resolve(values.resume)
+  : resolve(taskDirectory, `${task.operationId}.json`);
+if (!resumed) {
+  mkdirSync(taskDirectory, { recursive: true });
+  writeFileSync(taskFile, JSON.stringify(task, null, 2) + '\n', {
+    flag: 'wx',
+    flush: true,
+  });
+}
+console.log(JSON.stringify({ taskFile, operationId: task.operationId }));
 const registry = new ToolRegistry({
   onTrace: (trace) => {
     console.log(JSON.stringify(trace));
   },
 });
-registerDraftTools(registry, request);
+registerDraftTaskTools(registry, request, task.operationId);
 const traces: ToolTrace[] = [];
 const pendingSchema = z.object({
   status: z.literal('confirmation_required'),
@@ -65,7 +115,7 @@ const pendingSchema = z.object({
 const message = await executeTask({
   prompt: `Create a draft titled ${JSON.stringify(title)} in the Marketing project, then retrieve it.`,
   instructions:
-    'Use the available tools to inspect accessible projects and complete the task. Generate a UUID for each logical operation and reuse it on retries. Approval is handled separately by the user. Only claim success after retrieving the saved draft.',
+    'Use the available tools to inspect accessible projects and complete the task. The application manages operation IDs and reuses them on retries. Approval is handled separately by the user. Only claim success after retrieving the saved draft.',
   tools: {
     list: () => registry.list(),
     call: async (name, input) => {
@@ -75,7 +125,7 @@ const message = await executeTask({
       traces.push(trace);
       if (!stdin.isTTY)
         throw new Error(
-          'Approval requires an interactive terminal and the example browser UI.',
+          `Approval requires the example browser UI. Approve the pending operation there, then resume with --resume ${JSON.stringify(taskFile)}.`,
         );
       const terminal = createInterface({ input: stdin, output: stdout });
       try {
@@ -106,11 +156,26 @@ const message = await executeTask({
   },
 });
 const after = z.array(draftSchema).parse(await request('/drafts'));
-const created = after.filter(
-  (draft) => !before.some((previous) => previous.id === draft.id),
-);
-assert.equal(created.length, 1, 'Expected exactly one newly persisted draft');
+const completedDraftIds = new Set<string>();
+for (const trace of traces) {
+  if (trace.name !== 'create_draft' || trace.status !== 'success') continue;
+  const result = createDraftResultSchema.safeParse(trace.output);
+  if (
+    result.success &&
+    result.data.operationId === task.operationId &&
+    result.data.status === 'completed' &&
+    result.data.draftId
+  )
+    completedDraftIds.add(result.data.draftId);
+}
+assert.equal(completedDraftIds.size, 1, 'Task must complete exactly one draft');
+const created = after.filter((draft) => completedDraftIds.has(draft.id));
+assert.equal(created.length, 1, 'Task draft must exist in the application');
 const draft = created[0]!;
+assert(
+  !task.before.some((previous) => previous.id === draft.id),
+  'Task must create its own draft rather than claim a pre-existing one',
+);
 assert.equal(draft.title, title);
 assert.equal(draft.project_id, 'marketing');
 assert(

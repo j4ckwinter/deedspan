@@ -1,0 +1,13 @@
+{
+  "version": 1,
+  "operationId": "1b6c52cd-7b3e-45f9-865d-3c9822602a06",
+  "title": "Windows CLI autumn campaign 2026-11-06",
+  "origin": "http://127.0.0.1:56474",
+  "before": [
+    {
+      "id": "192a562b-20fa-4f9e-be9f-52abc2fb276f",
+      "project_id": "marketing",
+      "title": "Windows CLI launch notes 2026-11-06"
+    }
+  ]
+}

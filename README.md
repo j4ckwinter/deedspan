@@ -145,7 +145,19 @@ Keep the example server running. In another terminal, start the workbench with `
 DRAFTS_PASSWORD='choose-a-local-password' npm run example:agent -- 'Agent integration draft'
 ```
 
-The harness signs in as Alice, uses the same tool registrations as the browser, and asks the configured model to find Marketing, create a draft and retrieve it. When prompted, refresh the example browser, approve the displayed operation, and press Enter in the terminal. Approval is never exposed as an agent tool. The harness checks the persisted draft independently, requires a successful retrieval call, and exits unsuccessfully if the model's claims do not match the database-backed API.
+The harness signs in as Alice, uses task-bound tools backed by the same application API as the browser, and asks the configured model to find Marketing, create a draft and retrieve it. When prompted, refresh the example browser, approve the displayed operation, and press Enter in the terminal. Approval is never exposed as an agent tool. The harness checks the persisted draft independently, requires a successful retrieval call, and exits unsuccessfully if the model's claims do not match the database-backed API.
+
+The CLI binds its draft tool to an application-generated operation ID. The model supplies only the project and title. Before inference, the CLI saves the task ID, title, application origin and initial draft snapshot under `.data/draft-agent/`, then prints the task file path. `DRAFTS_RUN_DIR` overrides that directory. Keep these files private: they contain draft titles and IDs, but no login credentials.
+
+If the process stops, reuse the printed task file:
+
+```sh
+npm run example:agent -- --resume .data/draft-agent/<operation-id>.json
+```
+
+Resume uses the same operation ID across CLI and backend restarts. If approval is pending in a noninteractive terminal, approve through the browser and run the resume command. An already completed operation returns the existing draft. Keep the same `DRAFTS_ORIGIN` and backend database; replacing the database discards its operation history. The tool cannot change the approved title or project on a retry. Start a new invocation without `--resume` to deliberately create another draft, including one with the same title. Each invocation represents one draft task; it is not a general multi-draft agent session.
+
+The browser retains its existing explicit-operation tools for its own form and approval retries. Approval pauses and retries in the CLI are application-managed, rather than a model decision to approve or resume.
 
 Use an otherwise idle local example during this check. The run creates persistent data and sends tool inputs and outputs to the configured model provider. `DRAFTS_ORIGIN` and `WORKBENCH_ORIGIN` override the local application URLs. No model is bundled; live inference and external developer adoption remain validation steps requiring an available model and another developer.
 

@@ -1,0 +1,104 @@
+{
+  "model": "panky-qwen3:4b",
+  "approval": "Separate authenticated test operator; real CLI subprocess exits and resumes",
+  "results": [
+    {
+      "title": "Windows Qwen autumn campaign 2026-11-06",
+      "metadata": {
+        "taskFile": "C:\\Users\\jackw\\Documents\\dev\\deedspan\\artifacts\\windows-cli-owned-id-second\\tasks\\efe4140f-0499-41b4-ac78-aa23bfa24360.json",
+        "operationId": "efe4140f-0499-41b4-ac78-aa23bfa24360"
+      },
+      "first": {
+        "exitCode": 1,
+        "stdout": "{\"taskFile\":\"C:\\\\Users\\\\jackw\\\\Documents\\\\dev\\\\deedspan\\\\artifacts\\\\windows-cli-owned-id-second\\\\tasks\\\\efe4140f-0499-41b4-ac78-aa23bfa24360.json\",\"operationId\":\"efe4140f-0499-41b4-ac78-aa23bfa24360\"}\n{\"id\":\"b8d68f42-43cc-462e-a71b-2c5eb0878a04\",\"name\":\"search_projects\",\"input\":null,\"output\":null,\"status\":\"success\",\"durationMs\":16.46}\n{\"id\":\"85089bb3-fe50-4678-b74e-bb6a68fab799\",\"name\":\"create_draft\",\"input\":null,\"output\":null,\"status\":\"success\",\"durationMs\":11.72}\n",
+        "stderr": "C:\\Users\\jackw\\Documents\\dev\\deedspan\\scripts\\run-drafts-agent.ts:127\r\n        throw new Error(\r\n              ^\r\n\r\nError: Approval requires the example browser UI. Approve the pending operation there, then resume with --resume \"C:\\\\Users\\\\jackw\\\\Documents\\\\dev\\\\deedspan\\\\artifacts\\\\windows-cli-owned-id-second\\\\tasks\\\\efe4140f-0499-41b4-ac78-aa23bfa24360.json\".\r\n    at Object.call (C:\\Users\\jackw\\Documents\\dev\\deedspan\\scripts\\run-drafts-agent.ts:127:15)\r\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\r\n    at async executeTask (C:\\Users\\jackw\\Documents\\dev\\deedspan\\src\\core\\execute-task.ts:44:21)\r\n    at async <anonymous> (C:\\Users\\jackw\\Documents\\dev\\deedspan\\scripts\\run-drafts-agent.ts:115:17)\r\n\r\nNode.js v24.20.0\r\n"
+      },
+      "approval": {
+        "id": "efe4140f-0499-41b4-ac78-aa23bfa24360",
+        "user_id": "alice",
+        "project_id": "marketing",
+        "title": "Windows Qwen autumn campaign 2026-11-06",
+        "status": "approved",
+        "draft_id": null
+      },
+      "resumed": {
+        "exitCode": 0,
+        "stdout": "{\"taskFile\":\"C:\\\\Users\\\\jackw\\\\Documents\\\\dev\\\\deedspan\\\\artifacts\\\\windows-cli-owned-id-second\\\\tasks\\\\efe4140f-0499-41b4-ac78-aa23bfa24360.json\",\"operationId\":\"efe4140f-0499-41b4-ac78-aa23bfa24360\"}\n{\"id\":\"55b74111-22c7-47d2-a25f-fc815c67a345\",\"name\":\"search_projects\",\"input\":null,\"output\":null,\"status\":\"success\",\"durationMs\":4.99}\n{\"id\":\"775a2f09-a980-4c2a-bc77-8811293de030\",\"name\":\"create_draft\",\"input\":null,\"output\":null,\"status\":\"success\",\"durationMs\":23.39}\n{\"id\":\"0af69579-1abb-4a88-8f73-83281355eec3\",\"name\":\"get_draft\",\"input\":null,\"output\":null,\"status\":\"success\",\"durationMs\":3.12}\n{\n  \"status\": \"passed\",\n  \"draftId\": \"960d4123-c650-432b-b772-9bac48aaa623\",\n  \"modelMessage\": \"The draft titled \\\"Windows Qwen autumn campaign 2026-11-06\\\" has been successfully created in the Marketing project and retrieved. Its draft ID is `960d4123-c650-432b-b772-9bac48aaa623`.\"\n}\n",
+        "stderr": ""
+      },
+      "before": [],
+      "after": [
+        {
+          "id": "960d4123-c650-432b-b772-9bac48aaa623",
+          "project_id": "marketing",
+          "title": "Windows Qwen autumn campaign 2026-11-06"
+        }
+      ],
+      "calls": [
+        {
+          "id": "b8d68f42-43cc-462e-a71b-2c5eb0878a04",
+          "operation_id": null,
+          "method": "GET",
+          "path": "/api/projects",
+          "status": 200,
+          "created_at": "2026-11-06T20:36:27.166Z"
+        },
+        {
+          "id": "85089bb3-fe50-4678-b74e-bb6a68fab799",
+          "operation_id": "efe4140f-0499-41b4-ac78-aa23bfa24360",
+          "method": "POST",
+          "path": "/api/drafts",
+          "status": 200,
+          "created_at": "2026-11-06T20:36:27.489Z"
+        },
+        {
+          "id": "55b74111-22c7-47d2-a25f-fc815c67a345",
+          "operation_id": null,
+          "method": "GET",
+          "path": "/api/projects",
+          "status": 200,
+          "created_at": "2026-11-06T20:36:28.099Z"
+        },
+        {
+          "id": "775a2f09-a980-4c2a-bc77-8811293de030",
+          "operation_id": "efe4140f-0499-41b4-ac78-aa23bfa24360",
+          "method": "POST",
+          "path": "/api/drafts",
+          "status": 200,
+          "created_at": "2026-11-06T20:36:28.421Z"
+        },
+        {
+          "id": "0af69579-1abb-4a88-8f73-83281355eec3",
+          "operation_id": null,
+          "method": "GET",
+          "path": "/api/drafts/960d4123-c650-432b-b772-9bac48aaa623",
+          "status": 200,
+          "created_at": "2026-11-06T20:36:28.783Z"
+        }
+      ],
+      "events": [
+        {
+          "id": "8737ae74-9a35-41d7-928b-83407cd4604f",
+          "operation_id": "efe4140f-0499-41b4-ac78-aa23bfa24360",
+          "outcome": "confirmation_required",
+          "draft_id": null,
+          "created_at": "2026-11-06T20:36:27.484Z"
+        },
+        {
+          "id": "e459f4c9-70f9-4b2b-9ed8-ec1e6e4ae426",
+          "operation_id": "efe4140f-0499-41b4-ac78-aa23bfa24360",
+          "outcome": "approved",
+          "draft_id": null,
+          "created_at": "2026-11-06T20:36:27.523Z"
+        },
+        {
+          "id": "d54d7da7-923e-421e-b041-e2c9a1c97c2d",
+          "operation_id": "efe4140f-0499-41b4-ac78-aa23bfa24360",
+          "outcome": "completed",
+          "draft_id": "960d4123-c650-432b-b772-9bac48aaa623",
+          "created_at": "2026-11-06T20:36:28.416Z"
+        }
+      ]
+    }
+  ]
+}

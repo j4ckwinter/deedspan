@@ -1,0 +1,7 @@
+{
+  "phase": "before operator approval",
+  "expectedTitle": "Windows Qwen launch notes 2026-11-06",
+  "actualTitle": "Windows Qwen launch notes 2026-_11_06",
+  "result": "Rejected by experiment exact-title assertion; no approval issued; database removed by cleanup",
+  "reason": "Raw model arguments changed title; not an operation-ID persistence failure"
+}

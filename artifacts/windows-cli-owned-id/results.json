@@ -1,0 +1,206 @@
+{
+  "model": "panky-qwen3:4b",
+  "approval": "Separate authenticated test operator; real CLI subprocess exits and resumes",
+  "results": [
+    {
+      "title": "Windows CLI launch notes 2026-11-06",
+      "metadata": {
+        "taskFile": "C:\\Users\\jackw\\Documents\\dev\\deedspan\\artifacts\\windows-cli-owned-id\\tasks\\eb3d9b14-ea8b-466e-85c1-1d80712d504f.json",
+        "operationId": "eb3d9b14-ea8b-466e-85c1-1d80712d504f"
+      },
+      "first": {
+        "exitCode": 1,
+        "stdout": "{\"taskFile\":\"C:\\\\Users\\\\jackw\\\\Documents\\\\dev\\\\deedspan\\\\artifacts\\\\windows-cli-owned-id\\\\tasks\\\\eb3d9b14-ea8b-466e-85c1-1d80712d504f.json\",\"operationId\":\"eb3d9b14-ea8b-466e-85c1-1d80712d504f\"}\n{\"id\":\"360be587-5568-4dae-b78b-02db7cc7f602\",\"name\":\"create_draft\",\"input\":null,\"output\":null,\"status\":\"success\",\"durationMs\":10.91}\n",
+        "stderr": "C:\\Users\\jackw\\Documents\\dev\\deedspan\\scripts\\run-drafts-agent.ts:127\r\n        throw new Error(\r\n              ^\r\n\r\nError: Approval requires the example browser UI. Approve the pending operation there, then resume with --resume \"C:\\\\Users\\\\jackw\\\\Documents\\\\dev\\\\deedspan\\\\artifacts\\\\windows-cli-owned-id\\\\tasks\\\\eb3d9b14-ea8b-466e-85c1-1d80712d504f.json\".\r\n    at Object.call (C:\\Users\\jackw\\Documents\\dev\\deedspan\\scripts\\run-drafts-agent.ts:127:15)\r\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\r\n    at async executeTask (C:\\Users\\jackw\\Documents\\dev\\deedspan\\src\\core\\execute-task.ts:44:21)\r\n    at async <anonymous> (C:\\Users\\jackw\\Documents\\dev\\deedspan\\scripts\\run-drafts-agent.ts:115:17)\r\n\r\nNode.js v24.20.0\r\n"
+      },
+      "approval": {
+        "id": "eb3d9b14-ea8b-466e-85c1-1d80712d504f",
+        "user_id": "alice",
+        "project_id": "marketing",
+        "title": "Windows CLI launch notes 2026-11-06",
+        "status": "approved",
+        "draft_id": null
+      },
+      "resumed": {
+        "exitCode": 0,
+        "stdout": "{\"taskFile\":\"C:\\\\Users\\\\jackw\\\\Documents\\\\dev\\\\deedspan\\\\artifacts\\\\windows-cli-owned-id\\\\tasks\\\\eb3d9b14-ea8b-466e-85c1-1d80712d504f.json\",\"operationId\":\"eb3d9b14-ea8b-466e-85c1-1d80712d504f\"}\n{\"id\":\"d1ee6682-0af8-464c-8f23-b2ab9cb814ca\",\"name\":\"create_draft\",\"input\":null,\"output\":null,\"status\":\"success\",\"durationMs\":18.93}\n{\"id\":\"75055a01-722e-4025-9530-b16976a733b8\",\"name\":\"get_draft\",\"input\":null,\"output\":null,\"status\":\"success\",\"durationMs\":5.06}\n{\n  \"status\": \"passed\",\n  \"draftId\": \"192a562b-20fa-4f9e-be9f-52abc2fb276f\",\n  \"modelMessage\": \"The draft titled \\\"Windows CLI launch notes 2026-11-06\\\" has been successfully created and retrieved from the Marketing project. Here are the details:\\n\\n- **ID**: 192a562b-20fa-4f9e-be9f-52abc2fb276f  \\n- **Project**: Marketing  \\n- **Title**: Windows CLI launch notes 2026-11-06  \\n\\nThe operation is complete and verified.\"\n}\n",
+        "stderr": ""
+      },
+      "before": [],
+      "after": [
+        {
+          "id": "192a562b-20fa-4f9e-be9f-52abc2fb276f",
+          "project_id": "marketing",
+          "title": "Windows CLI launch notes 2026-11-06"
+        }
+      ],
+      "calls": [
+        {
+          "id": "360be587-5568-4dae-b78b-02db7cc7f602",
+          "operation_id": "eb3d9b14-ea8b-466e-85c1-1d80712d504f",
+          "method": "POST",
+          "path": "/api/drafts",
+          "status": 200,
+          "created_at": "2026-11-06T20:34:00.756Z"
+        },
+        {
+          "id": "d1ee6682-0af8-464c-8f23-b2ab9cb814ca",
+          "operation_id": "eb3d9b14-ea8b-466e-85c1-1d80712d504f",
+          "method": "POST",
+          "path": "/api/drafts",
+          "status": 200,
+          "created_at": "2026-11-06T20:34:01.540Z"
+        },
+        {
+          "id": "75055a01-722e-4025-9530-b16976a733b8",
+          "operation_id": null,
+          "method": "GET",
+          "path": "/api/drafts/192a562b-20fa-4f9e-be9f-52abc2fb276f",
+          "status": 200,
+          "created_at": "2026-11-06T20:34:02.170Z"
+        }
+      ],
+      "events": [
+        {
+          "id": "5d38e3f4-92e1-4083-89e6-a33958a4ba8a",
+          "operation_id": "eb3d9b14-ea8b-466e-85c1-1d80712d504f",
+          "outcome": "confirmation_required",
+          "draft_id": null,
+          "created_at": "2026-11-06T20:34:00.751Z"
+        },
+        {
+          "id": "0bdcc0db-f3d0-4252-b856-a2b43c97167f",
+          "operation_id": "eb3d9b14-ea8b-466e-85c1-1d80712d504f",
+          "outcome": "approved",
+          "draft_id": null,
+          "created_at": "2026-11-06T20:34:00.803Z"
+        },
+        {
+          "id": "fc4150d6-afef-46e2-bc6d-7771d9fb6251",
+          "operation_id": "eb3d9b14-ea8b-466e-85c1-1d80712d504f",
+          "outcome": "completed",
+          "draft_id": "192a562b-20fa-4f9e-be9f-52abc2fb276f",
+          "created_at": "2026-11-06T20:34:01.535Z"
+        }
+      ]
+    },
+    {
+      "title": "Windows CLI autumn campaign 2026-11-06",
+      "metadata": {
+        "taskFile": "C:\\Users\\jackw\\Documents\\dev\\deedspan\\artifacts\\windows-cli-owned-id\\tasks\\1b6c52cd-7b3e-45f9-865d-3c9822602a06.json",
+        "operationId": "1b6c52cd-7b3e-45f9-865d-3c9822602a06"
+      },
+      "first": {
+        "exitCode": 1,
+        "stdout": "{\"taskFile\":\"C:\\\\Users\\\\jackw\\\\Documents\\\\dev\\\\deedspan\\\\artifacts\\\\windows-cli-owned-id\\\\tasks\\\\1b6c52cd-7b3e-45f9-865d-3c9822602a06.json\",\"operationId\":\"1b6c52cd-7b3e-45f9-865d-3c9822602a06\"}\n{\"id\":\"6cb12e07-0a41-4d1d-bb86-2bf741375440\",\"name\":\"create_draft\",\"input\":null,\"output\":null,\"status\":\"success\",\"durationMs\":24.17}\n",
+        "stderr": "C:\\Users\\jackw\\Documents\\dev\\deedspan\\scripts\\run-drafts-agent.ts:127\r\n        throw new Error(\r\n              ^\r\n\r\nError: Approval requires the example browser UI. Approve the pending operation there, then resume with --resume \"C:\\\\Users\\\\jackw\\\\Documents\\\\dev\\\\deedspan\\\\artifacts\\\\windows-cli-owned-id\\\\tasks\\\\1b6c52cd-7b3e-45f9-865d-3c9822602a06.json\".\r\n    at Object.call (C:\\Users\\jackw\\Documents\\dev\\deedspan\\scripts\\run-drafts-agent.ts:127:15)\r\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)\r\n    at async executeTask (C:\\Users\\jackw\\Documents\\dev\\deedspan\\src\\core\\execute-task.ts:44:21)\r\n    at async <anonymous> (C:\\Users\\jackw\\Documents\\dev\\deedspan\\scripts\\run-drafts-agent.ts:115:17)\r\n\r\nNode.js v24.20.0\r\n"
+      },
+      "approval": {
+        "id": "1b6c52cd-7b3e-45f9-865d-3c9822602a06",
+        "user_id": "alice",
+        "project_id": "marketing",
+        "title": "Windows CLI autumn campaign 2026-11-06",
+        "status": "approved",
+        "draft_id": null
+      },
+      "resumed": {
+        "exitCode": 1,
+        "stdout": "{\"taskFile\":\"C:\\\\Users\\\\jackw\\\\Documents\\\\dev\\\\deedspan\\\\artifacts\\\\windows-cli-owned-id\\\\tasks\\\\1b6c52cd-7b3e-45f9-865d-3c9822602a06.json\",\"operationId\":\"1b6c52cd-7b3e-45f9-865d-3c9822602a06\"}\n{\"id\":\"a5111525-14f6-4562-afb3-91ae4233efc5\",\"name\":\"create_draft\",\"input\":null,\"output\":null,\"status\":\"error\",\"durationMs\":4.8}\n",
+        "stderr": "node:internal/modules/run_main:107\r\n    triggerUncaughtException(\r\n    ^\r\n\r\nAssertionError [ERR_ASSERTION]: Expected exactly one newly persisted draft\r\n\r\n0 !== 1\r\n\r\n    at <anonymous> (C:\\Users\\jackw\\Documents\\dev\\deedspan\\scripts\\run-drafts-agent.ts:162:8)\r\n    at process.processTicksAndRejections (node:internal/process/task_queues:104:5) {\r\n  generatedMessage: false,\r\n  code: 'ERR_ASSERTION',\r\n  actual: 0,\r\n  expected: 1,\r\n  operator: 'strictEqual',\r\n  diff: 'simple'\r\n}\r\n\r\nNode.js v24.20.0\r\n"
+      },
+      "before": [
+        {
+          "id": "192a562b-20fa-4f9e-be9f-52abc2fb276f",
+          "project_id": "marketing",
+          "title": "Windows CLI launch notes 2026-11-06"
+        }
+      ],
+      "after": [
+        {
+          "id": "192a562b-20fa-4f9e-be9f-52abc2fb276f",
+          "project_id": "marketing",
+          "title": "Windows CLI launch notes 2026-11-06"
+        }
+      ],
+      "calls": [
+        {
+          "id": "360be587-5568-4dae-b78b-02db7cc7f602",
+          "operation_id": "eb3d9b14-ea8b-466e-85c1-1d80712d504f",
+          "method": "POST",
+          "path": "/api/drafts",
+          "status": 200,
+          "created_at": "2026-11-06T20:34:00.756Z"
+        },
+        {
+          "id": "d1ee6682-0af8-464c-8f23-b2ab9cb814ca",
+          "operation_id": "eb3d9b14-ea8b-466e-85c1-1d80712d504f",
+          "method": "POST",
+          "path": "/api/drafts",
+          "status": 200,
+          "created_at": "2026-11-06T20:34:01.540Z"
+        },
+        {
+          "id": "75055a01-722e-4025-9530-b16976a733b8",
+          "operation_id": null,
+          "method": "GET",
+          "path": "/api/drafts/192a562b-20fa-4f9e-be9f-52abc2fb276f",
+          "status": 200,
+          "created_at": "2026-11-06T20:34:02.170Z"
+        },
+        {
+          "id": "6cb12e07-0a41-4d1d-bb86-2bf741375440",
+          "operation_id": "1b6c52cd-7b3e-45f9-865d-3c9822602a06",
+          "method": "POST",
+          "path": "/api/drafts",
+          "status": 200,
+          "created_at": "2026-11-06T20:34:03.688Z"
+        },
+        {
+          "id": "a5111525-14f6-4562-afb3-91ae4233efc5",
+          "operation_id": "1b6c52cd-7b3e-45f9-865d-3c9822602a06",
+          "method": "POST",
+          "path": "/api/drafts",
+          "status": 403,
+          "created_at": "2026-11-06T20:34:04.527Z"
+        }
+      ],
+      "events": [
+        {
+          "id": "5d38e3f4-92e1-4083-89e6-a33958a4ba8a",
+          "operation_id": "eb3d9b14-ea8b-466e-85c1-1d80712d504f",
+          "outcome": "confirmation_required",
+          "draft_id": null,
+          "created_at": "2026-11-06T20:34:00.751Z"
+        },
+        {
+          "id": "0bdcc0db-f3d0-4252-b856-a2b43c97167f",
+          "operation_id": "eb3d9b14-ea8b-466e-85c1-1d80712d504f",
+          "outcome": "approved",
+          "draft_id": null,
+          "created_at": "2026-11-06T20:34:00.803Z"
+        },
+        {
+          "id": "fc4150d6-afef-46e2-bc6d-7771d9fb6251",
+          "operation_id": "eb3d9b14-ea8b-466e-85c1-1d80712d504f",
+          "outcome": "completed",
+          "draft_id": "192a562b-20fa-4f9e-be9f-52abc2fb276f",
+          "created_at": "2026-11-06T20:34:01.535Z"
+        },
+        {
+          "id": "86d55f68-1a75-4ce6-b97a-a4dd607fa17d",
+          "operation_id": "1b6c52cd-7b3e-45f9-865d-3c9822602a06",
+          "outcome": "confirmation_required",
+          "draft_id": null,
+          "created_at": "2026-11-06T20:34:03.684Z"
+        },
+        {
+          "id": "d8906c78-c9e6-470a-be30-74c64dc0624e",
+          "operation_id": "1b6c52cd-7b3e-45f9-865d-3c9822602a06",
+          "outcome": "approved",
+          "draft_id": null,
+          "created_at": "2026-11-06T20:34:03.753Z"
+        }
+      ]
+    }
+  ]
+}
