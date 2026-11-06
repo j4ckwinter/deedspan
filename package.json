@@ -1,6 +1,6 @@
 {
   "name": "deedspan",
-  "version": "0.0.0",
+  "version": "0.1.0-preview.1",
   "private": true,
   "type": "module",
   "engines": {
@@ -33,7 +33,10 @@
     "premodel:check": "npm run build:sdk",
     "model:check:update": "node --import tsx scripts/verify-draft-update-model.ts",
     "premodel:check:update": "npm run build:sdk",
-    "example:install": "node scripts/install-example.mjs"
+    "example:install": "node scripts/install-example.mjs",
+    "example:install:inventory": "node scripts/install-example.mjs inventory",
+    "test:consumer": "node scripts/test-consumer.mjs",
+    "preview:pack": "node scripts/pack-preview.mjs"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
@@ -64,7 +67,8 @@
   },
   "description": "Expose application actions to agents with validation, authorization hooks, and execution traces.",
   "files": [
-    "lib"
+    "lib",
+    "docs"
   ],
   "main": "./lib/index.js",
   "types": "./lib/index.d.ts",

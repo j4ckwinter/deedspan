@@ -23,6 +23,7 @@ jobs:
       - run: npm run build --prefix examples/drafts
       - run: npm test --prefix examples/drafts
       - run: npm run test:package
+      - run: npm run test:consumer
       - run: npx playwright install --with-deps chromium
       - run: npm run test:e2e
       - uses: actions/upload-artifact@v4
@@ -45,3 +46,4 @@ jobs:
       - run: npm run build --prefix examples/drafts
       - run: npm test --prefix examples/drafts
       - run: npm run test:package
+      - run: npm run test:consumer

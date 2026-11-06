@@ -4,6 +4,9 @@ import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 
 const root = resolve(import.meta.dirname, '..');
+const example = process.argv[2] ?? 'drafts';
+if (!['drafts', 'inventory'].includes(example) || process.argv.length > 3)
+  throw new Error('Choose the drafts or inventory example.');
 const directory = await mkdtemp(join(tmpdir(), 'deedspan-example-'));
 try {
   runNpm(['run', 'build:sdk'], { cwd: root, stdio: 'inherit' });
@@ -22,10 +25,10 @@ try {
       '--package-lock=false',
       join(directory, packed.filename),
     ],
-    { cwd: join(root, 'examples/drafts'), stdio: 'inherit' },
+    { cwd: join(root, 'examples', example), stdio: 'inherit' },
   );
   console.log(
-    'Drafts example now consumes the packed SDK. Rerun example:install after SDK changes.',
+    `${example} example now consumes the packed SDK. Reinstall after SDK changes.`,
   );
 } finally {
   await rm(directory, { recursive: true, force: true });

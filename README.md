@@ -2,6 +2,8 @@
 
 A TypeScript SDK for exposing application actions to agents, with validation, application-owned access checks, and execution traces. The repository includes a local workbench and a separate persistent draft application.
 
+The local developer preview is `0.1.0-preview.1`. Start with the [preview guide](docs/developer-preview.md) for setup and verification, or the [integration guide](docs/integration.md) for public API usage, model wiring, authority boundaries and trace interpretation. `npm run preview:pack` creates an installable archive and a source/hash manifest under `artifacts/developer-preview/`; it does not publish anything.
+
 The first workflow is a React draft application: find a project, create a draft, and retrieve it. The workbench records tool calls and checks the saved application state independently of the agent's answer. A built-in regression deliberately saves drafts in the wrong project, so you can see a successful tool call fail an outcome assertion.
 
 ## Run locally
@@ -70,7 +72,7 @@ Environment variables set in PowerShell apply to that terminal. Use the same dra
 
 A successful check discovers Marketing, waits for approval, creates exactly one draft, retrieves it, and prints `"status": "passed"` after independently checking the saved state. Repeat with different titles. Check operation and call IDs in the application when investigating a failure. Backend tests separately exercise denied access and idempotent retries; do not infer those guarantees from a model's final message.
 
-Windows CI covers setup, package installation, type checks and backend tests. A green Windows CI run and a genuine Ollama run are separate evidence; neither has been established by the local macOS checks alone.
+Windows CI is configured for setup, package installation, type checks, backend tests and an external consumer check. CI results and genuine Ollama runs are separate evidence; local verification does not establish the status of a remote CI run.
 
 ## Register application tools
 
@@ -79,7 +81,7 @@ The SDK has compiled JavaScript and TypeScript declarations, with core (`deedspa
 ```sh
 npm pack --pack-destination /tmp
 # In your application:
-npm install /tmp/deedspan-0.0.0.tgz
+npm install /tmp/deedspan-0.1.0-preview.1.tgz
 ```
 
 `npm run test:package` verifies an actual tarball installation outside this repository, including runtime behavior and TypeScript declarations. The core package does not require React.
@@ -125,6 +127,8 @@ const tools = new ToolRegistry({
 WebMCP is experimental. Browser/API compatibility must be checked against the browser you intend to support. Remote MCP, arbitrary-site connections, and production analytics are outside this first release.
 
 ## Persistent application integration
+
+The [inventory application](examples/inventory/README.md) demonstrates a separate domain: discovering products, reserving finite stock and retrieving the reservation. It uses only the public SDK and its own SQLite domain rules. `npm run test:consumer` copies it outside the repository, installs the SDK tarball, then builds and tests the application. Use `npm run example:install:inventory` to install it in the source checkout.
 
 The [separate drafts application](examples/drafts/README.md) owns authentication, project permissions, approvals and SQLite persistence. Its browser tools use the installed SDK to call its existing backend.
 
