@@ -74,7 +74,7 @@ export function registerDraftUpdateTaskTools(
   tools.register({
     name: 'search_drafts',
     description:
-      'Find accessible drafts matching this task. The application supplies the title search. Use a returned ID to request the update.',
+      'Call this tool with exactly {}. It takes no arguments: do not pass title, query, or filters. The application has already saved the search text for this task. Returns matching accessible drafts and their IDs. Use a returned ID to request the update.',
     input: z.object({}).strict(),
     execute: async (_input, context) => {
       discovered = await search(request, task.query, context.callId);
