@@ -107,7 +107,10 @@ const registry = new ToolRegistry({
     console.log(JSON.stringify(trace));
   },
 });
-registerDraftTaskTools(registry, request, task.operationId);
+registerDraftTaskTools(registry, request, {
+  operationId: task.operationId,
+  title: task.title,
+});
 const traces: ToolTrace[] = [];
 const pendingSchema = z.object({
   status: z.literal('confirmation_required'),
@@ -116,7 +119,7 @@ const pendingSchema = z.object({
 const message = await executeTask({
   prompt: `Create a draft titled ${JSON.stringify(title)} in the Marketing project, then retrieve it.`,
   instructions:
-    'Use the available tools to inspect accessible projects and complete the task. The application manages operation IDs and reuses them on retries. Approval is handled separately by the user. Only claim success after retrieving the saved draft.',
+    'Use the available tools to inspect accessible projects and complete the task. The application supplies the exact task title, operation ID, and saved draft ID. Choose the discovered project ID for create_draft, then call get_draft with no arguments after creation completes. Approval is handled separately by the user. Only claim success after retrieving the saved draft.',
   tools: {
     list: () => registry.list(),
     call: async (name, input) => {

@@ -1,6 +1,10 @@
 import { type ToolRegistry } from 'deedspan';
 import { z } from 'zod';
-import { createDraftSchema } from './contracts.js';
+import {
+  createDraftSchema,
+  createDraftResultSchema,
+  type CreateDraftInput,
+} from './contracts.js';
 
 export type DraftRequest = (
   path: string,
@@ -22,19 +26,49 @@ export function registerDraftTools(tools: ToolRegistry, request: DraftRequest) {
 export function registerDraftTaskTools(
   tools: ToolRegistry,
   request: DraftRequest,
-  operationId: string,
+  taskInput: Pick<CreateDraftInput, 'operationId' | 'title'>,
 ) {
-  const id = z.uuid().parse(operationId);
+  const task = createDraftSchema
+    .pick({ operationId: true, title: true })
+    .parse(taskInput);
+  let draftId: string | undefined;
   registerProjectTool(tools, request);
   tools.register({
     name: 'create_draft',
     description:
-      'Request a draft in a project. The application manages operation IDs and reuses them on retries. If confirmation_required, ask the user to approve the exact operation in the application, then retry. Never approve on their behalf.',
-    input: createDraftSchema.omit({ operationId: true }),
-    execute: (input, context) =>
-      request('/drafts', { ...input, operationId: id }, context.callId),
+      "Request this task's draft in a project. The application supplies the exact title and operation ID and reuses them on retries. If confirmation_required, ask the user to approve the exact operation in the application, then retry. Never approve on their behalf.",
+    input: createDraftSchema.pick({ projectId: true }),
+    execute: async (input, context) => {
+      const result = createDraftResultSchema.parse(
+        await request('/drafts', { ...input, ...task }, context.callId),
+      );
+      if (result.operationId !== task.operationId)
+        throw new Error('Draft response belongs to a different task');
+      if (result.status === 'completed') {
+        if (!result.draftId)
+          throw new Error('Completed draft response must include a draft ID');
+        draftId = result.draftId;
+      }
+      return result;
+    },
   });
-  registerGetDraftTool(tools, request);
+  tools.register({
+    name: 'get_draft',
+    description:
+      'Retrieve the saved draft for this task after create_draft completes. The application supplies the saved draft ID.',
+    input: z.object({}).strict(),
+    execute: (_input, context) => {
+      if (!draftId)
+        throw new Error(
+          'Complete create_draft for this task before retrieving it',
+        );
+      return request(
+        `/drafts/${encodeURIComponent(draftId)}`,
+        undefined,
+        context.callId,
+      );
+    },
+  });
 }
 
 function registerProjectTool(tools: ToolRegistry, request: DraftRequest) {

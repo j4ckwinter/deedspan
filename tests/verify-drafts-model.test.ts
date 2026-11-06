@@ -10,7 +10,7 @@ import { messageSchema } from '../src/core/types.js';
 import { createDraftResultSchema } from '../examples/drafts/src/contracts.js';
 
 const model = 'test-local:4b';
-async function fixture(mode: 'happy' | 'wrong-title' | 'unavailable') {
+async function fixture(mode: 'happy' | 'forbidden-title' | 'unavailable') {
   const directory = await mkdtemp(join(tmpdir(), 'model-verification-test-'));
   const server = createServer((req, res) => {
     void (async () => {
@@ -71,18 +71,23 @@ async function fixture(mode: 'happy' | 'wrong-title' | 'unavailable') {
       else if (results.length === 1)
         reply = call('create_draft', {
           projectId: 'marketing',
-          title:
-            mode === 'wrong-title' && title === 'First'
-              ? 'Incorrect title'
-              : title,
+          ...(mode === 'forbidden-title' && title === 'First'
+            ? { title: 'Injected title' }
+            : {}),
         });
       else if (results.length === 2) {
         const result = results[1];
         assert(result?.content);
-        const created = createDraftResultSchema.parse(
-          JSON.parse(result.content),
-        );
-        reply = call('get_draft', { id: created.draftId });
+        if (mode === 'forbidden-title' && title === 'First') {
+          const rejected = z
+            .object({ error: z.string() })
+            .parse(JSON.parse(result.content));
+          assert.match(rejected.error, /title/);
+          reply = { content: 'The supplied title was rejected.' };
+        } else {
+          createDraftResultSchema.parse(JSON.parse(result.content));
+          reply = call('get_draft', {});
+        }
       } else reply = { content: 'Created and retrieved.' };
       res.end(JSON.stringify({ choices: [{ message: reply }] }));
     })().catch((error: unknown) => {
@@ -177,8 +182,8 @@ test('model check runs real CLI approval/resume for two titles and retains indep
   }
 });
 
-test('wrong pending title receives no approval or draft and does not prevent the next trial', async () => {
-  const local = await fixture('wrong-title');
+test('forbidden title fails validation before approval and does not prevent the next trial', async () => {
+  const local = await fixture('forbidden-title');
   try {
     const report = await runModelVerification({
       model,
@@ -193,6 +198,9 @@ test('wrong pending title receives no approval or draft and does not prevent the
     );
     const first = report.trials[0];
     assert(first);
+    assert.equal(first.status, 'failed');
+    if (first.status === 'failed')
+      assert.match(first.error, /Task must complete exactly one draft/);
     const state = z
       .object({
         drafts: z.array(z.unknown()),
@@ -202,7 +210,7 @@ test('wrong pending title receives no approval or draft and does not prevent the
     assert.deepEqual(state.drafts, []);
     assert.deepEqual(
       state.events.map((event) => event.outcome),
-      ['confirmation_required'],
+      [],
     );
     assert(!(await readdir(first.directory)).includes('approval.json'));
   } finally {

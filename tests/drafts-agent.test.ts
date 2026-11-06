@@ -51,7 +51,7 @@ test('a durable agent task survives approval and backend restarts without duplic
   const appOrigin = await listen(app);
   app.on('request', createApp(store, appOrigin));
   const modelOrigin = await listen(model);
-  const title = 'Harness outcome';
+  const title = 'Launch: \u201c\u00e9t\u00e9\u201d / \u6771\u4eac \u{1f680}';
   const alice = { id: 'alice', name: 'Alice' };
   const selected: string[] = [];
   let inferenceCount = 0;
@@ -74,8 +74,11 @@ test('a durable agent task survives approval and backend restarts without duplic
       assert.ok(createTool);
       assert.doesNotMatch(
         JSON.stringify(createTool.inputSchema),
-        /operationId/,
+        /operationId|title/,
       );
+      const getTool = request.tools.find((tool) => tool.name === 'get_draft');
+      assert.ok(getTool);
+      assert.doesNotMatch(JSON.stringify(getTool.inputSchema), /"id"/);
       const results = request.messages.filter(
         (message) => message.role === 'tool',
       );
@@ -94,9 +97,9 @@ test('a durable agent task survives approval and backend restarts without duplic
       };
       let reply;
       if (results.length === 0 && discovery === 'skipped')
-        reply = call('create_draft', { projectId: 'marketing', title });
+        reply = call('create_draft', { projectId: 'marketing' });
       else if (results.length === 0 && discovery === 'late') {
-        const create = call('create_draft', { projectId: 'marketing', title });
+        const create = call('create_draft', { projectId: 'marketing' });
         const search = call('search_projects', {});
         reply = {
           content: null,
@@ -108,7 +111,7 @@ test('a durable agent task survives approval and backend restarts without duplic
           discovery === 'failed' ? { query: 'Marketing' } : {},
         );
       else if (results.length === 1)
-        reply = call('create_draft', { projectId: 'marketing', title });
+        reply = call('create_draft', { projectId: 'marketing' });
       else if (results.length === 2) {
         const created = results[1];
         assert.ok(created?.content);
@@ -116,7 +119,7 @@ test('a durable agent task survives approval and backend restarts without duplic
           JSON.parse(created.content),
         );
         assert.equal(result.status, 'completed');
-        reply = call('get_draft', { id: result.draftId });
+        reply = call('get_draft', {});
       } else reply = { content: 'Created and retrieved.' };
       res.setHeader('Content-Type', 'application/json');
       res.end(JSON.stringify(reply));
