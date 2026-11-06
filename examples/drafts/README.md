@@ -9,7 +9,7 @@ npm run example:install
 DRAFTS_PASSWORD='choose-a-local-password' npm run dev --prefix examples/drafts
 ```
 
-In PowerShell, set `$env:DRAFTS_PASSWORD = 'choose-a-local-password'` first, then run `npm run dev --prefix examples/drafts`. See the [Windows guide](../../README.md#windows-and-powershell) for the model workflow.
+In PowerShell, set `$env:DRAFTS_PASSWORD = 'choose-a-local-password'` first, then run `npm run dev --prefix examples/drafts`. See the [Windows guide](../../docs/local-development.md#windows-and-powershell) for the model workflow.
 
 Open http://127.0.0.1:3101 and sign in as `alice` (Marketing access) or `bob` (Engineering access), using the password you configured. The server requires at least 12 characters. Password hashes are seeded once, so changing the environment variable does not change existing accounts. To start over, stop the server and remove only this example's `.data/drafts.sqlite` database.
 
@@ -25,13 +25,13 @@ Each draft request supplies a UUID `operationId`. Reusing that ID with the same 
 
 SDK trace IDs are sent as `X-Tool-Call-Id`. `/api/calls` records those IDs alongside operation IDs and HTTP outcomes. `/api/events` records confirmation, approval and completion, including the persisted draft ID. Events and calls are visible only to their owning user. SDK observers use metadata-only capture by default; the application does not persist draft titles or result payloads in its audit tables. Draft content remains in the application database.
 
-The real-model harness runs from the repository root with `npm run example:agent`; see the root README for configuration. Model verification requires an available compatible model endpoint. Direct SDK calls and scripted tests alone do not establish model reliability.
+The real-model harness runs from the repository root with `npm run example:agent`; see [model setup](../../docs/local-development.md#use-a-real-model) for configuration. Model verification requires an available compatible model endpoint. Direct SDK calls and scripted tests alone do not establish model reliability.
 
 For one-draft agent tasks, `registerDraftTaskTools(registry, request, { operationId, title })` binds an application-owned UUID and the validated task title. The model supplies only `projectId` to `create_draft`; it cannot override the title or operation ID. The caller must persist those values before the first request and reuse them when resuming the same task. The CLI does this with a saved task file and `--resume`. A new task gets a new UUID even when its title matches an earlier task. Backend approval and idempotency rules are the same for both registrations.
 
 The task's `get_draft` tool takes an empty object and uses the ID from its completed creation response. It rejects calls before completion and rejects model-supplied IDs. A fresh registration after restart must replay `create_draft` to recover the saved ID from the existing operation before retrieving. This keeps task identity durable in the backend and saved task file rather than asking the model to copy opaque IDs. The browser's general-purpose `registerDraftTools` keeps its original explicit title and ID inputs.
 
-The CLI requires successful Marketing discovery before any creation attempt, including after a resume. From the repository root, `npm run model:check -- --model panky-qwen3:4b` runs repeatable checks against an isolated backend with explicitly labeled automated approvals. See the root README for custom titles, local endpoint settings and evidence output.
+The CLI requires successful Marketing discovery before any creation attempt, including after a resume. From the repository root, `npm run model:check -- --model panky-qwen3:4b` runs repeatable checks against an isolated backend with explicitly labeled automated approvals. See [repeatable model checks](../../docs/local-development.md#repeatable-local-model-checks) for custom titles, local endpoint settings and evidence output.
 
 ## Updating an existing draft
 
