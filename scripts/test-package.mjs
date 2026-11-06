@@ -1,4 +1,5 @@
 import assert from 'node:assert/strict';
+import { runNpm } from './npm.ts';
 import { execFileSync } from 'node:child_process';
 import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -8,7 +9,9 @@ const root = resolve(import.meta.dirname, '..');
 const manifest = JSON.parse(await readFile(join(root, 'package.json'), 'utf8'));
 const directory = await mkdtemp(join(tmpdir(), 'short-stack-package-'));
 const run = (command, args, cwd = directory) =>
-  execFileSync(command, args, { cwd, encoding: 'utf8', stdio: 'pipe' });
+  command === 'npm'
+    ? runNpm(args, { cwd, stdio: 'pipe' })
+    : execFileSync(command, args, { cwd, encoding: 'utf8', stdio: 'pipe' });
 const install = (...packages) =>
   run('npm', [
     'install',

@@ -1,4 +1,4 @@
-import { execFileSync } from 'node:child_process';
+import { runNpm } from './npm.ts';
 import { mkdtemp, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
@@ -6,18 +6,16 @@ import { join, resolve } from 'node:path';
 const root = resolve(import.meta.dirname, '..');
 const directory = await mkdtemp(join(tmpdir(), 'short-stack-example-'));
 try {
-  execFileSync('npm', ['run', 'build:sdk'], { cwd: root, stdio: 'inherit' });
+  runNpm(['run', 'build:sdk'], { cwd: root, stdio: 'inherit' });
   const [packed] = Object.values(
     JSON.parse(
-      execFileSync(
-        'npm',
+      runNpm(
         ['pack', '--ignore-scripts', '--json', '--pack-destination', directory],
         { cwd: root, encoding: 'utf8' },
       ),
     ),
   );
-  execFileSync(
-    'npm',
+  runNpm(
     [
       'install',
       '--no-save',

@@ -33,6 +33,45 @@ For another compatible provider, configure `MODEL_BASE_URL` (including `/v1` whe
 
 The server binds to loopback and rejects cross-origin API requests. This release is a local development tool; it has no multi-user authentication or production authorization service.
 
+## Windows and PowerShell
+
+Install Node.js 24 or newer and open PowerShell in the repository root. The setup scripts invoke npm through Node directly, preserving paths containing spaces without shell quoting.
+
+```powershell
+npm ci
+npm run example:install
+npm run check
+npm test --prefix examples/drafts
+npm run test:package
+Copy-Item .env.example .env
+ollama list
+```
+
+Set `MODEL_NAME` in `.env` to the exact installed tool-capable model name. Keep `MODEL_BASE_URL=http://127.0.0.1:11434/v1` when Ollama is running locally. Use three PowerShell terminals, each in the repository root:
+
+```powershell
+# Terminal 1: model proxy and workbench
+npm run dev
+```
+
+```powershell
+# Terminal 2: persistent application
+$env:DRAFTS_PASSWORD = 'choose-a-local-password'
+npm run dev --prefix examples/drafts
+```
+
+```powershell
+# Terminal 3: live-model verification
+$env:DRAFTS_PASSWORD = 'choose-a-local-password'
+npm run example:agent -- 'Windows agent integration'
+```
+
+Environment variables set in PowerShell apply to that terminal. Use the same draft password in terminals 2 and 3. At <http://127.0.0.1:3101>, sign in as Alice, refresh requests, review the exact operation and approve it when the harness prompts. Then press Enter in terminal 3.
+
+A successful check discovers Marketing, waits for approval, creates exactly one draft, retrieves it, and prints `"status": "passed"` after independently checking the saved state. Repeat with different titles. Check operation and call IDs in the application when investigating a failure. Backend tests separately exercise denied access and idempotent retries; do not infer those guarantees from a model's final message.
+
+Windows CI covers setup, package installation, type checks and backend tests. A green Windows CI run and a genuine Ollama run are separate evidence; neither has been established by the local macOS checks alone.
+
 ## Register application tools
 
 The SDK has compiled JavaScript and TypeScript declarations, with core (`short-stack`) and React (`short-stack/react`) entry points. It is not published to npm. Build a tarball locally and install the resulting file in another application:

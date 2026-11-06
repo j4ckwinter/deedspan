@@ -30,3 +30,18 @@ jobs:
         with:
           name: browser-test-evidence
           path: test-results/
+
+  windows:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+      - run: npm ci
+      - run: npm run example:install
+      - run: npm run check
+      - run: npm run build --prefix examples/drafts
+      - run: npm test --prefix examples/drafts
+      - run: npm run test:package
