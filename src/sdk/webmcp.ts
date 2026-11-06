@@ -2,7 +2,7 @@ import {
   toolDescriptorSchema,
   type ToolDescriptor,
   type ToolTrace,
-} from '../core/types.js';
+} from './types.js';
 import { captureCall, ToolRegistry } from './registry.js';
 
 export interface NativeTool extends ToolDescriptor {
@@ -68,22 +68,47 @@ export async function connectWebMCP(
     string,
     { controller: AbortController; descriptor: string }
   >();
-  const remove = (name: string) => {
-    const registration = owned.get(name);
-    if (!registration) return;
-    owned.delete(name);
-    registration.controller.abort();
-    context.unregisterTool?.(name);
+  const remove = (names: Iterable<string>): string[] => {
+    const errors: string[] = [];
+    for (const name of names) {
+      const registration = owned.get(name);
+      if (!registration) continue;
+      try {
+        if (context.unregisterTool) context.unregisterTool(name);
+        else registration.controller.abort();
+        owned.delete(name);
+      } catch (error) {
+        errors.push(
+          `${name}: ${error instanceof Error ? error.message : 'Unknown error'}`,
+        );
+      }
+    }
+    return errors;
+  };
+  const disconnect = () => {
+    const errors = remove(owned.keys());
+    status = errors.length
+      ? `WebMCP cleanup failed: ${errors.join('; ')}`
+      : 'Disconnected';
   };
   const synchronize = async () => {
     if (disposed) return;
-    const descriptors = registry.list();
-    for (const [name, registration] of owned) {
-      const descriptor = descriptors.find((tool) => tool.name === name);
-      if (!descriptor || JSON.stringify(descriptor) !== registration.descriptor)
-        remove(name);
-    }
     try {
+      const descriptors = registry.list();
+      const stale = [...owned]
+        .filter(([name, registration]) => {
+          const descriptor = descriptors.find((tool) => tool.name === name);
+          return (
+            !descriptor ||
+            JSON.stringify(descriptor) !== registration.descriptor
+          );
+        })
+        .map(([name]) => name);
+      const errors = remove(stale);
+      if (errors.length) {
+        status = `WebMCP cleanup failed: ${errors.join('; ')}`;
+        return;
+      }
       for (const descriptor of descriptors) {
         if (disposed) break;
         if (owned.has(descriptor.name)) continue;
@@ -110,12 +135,13 @@ export async function connectWebMCP(
           controller,
           descriptor: JSON.stringify(descriptor),
         });
-        if (disposed) remove(descriptor.name);
+        if (disposed) disconnect();
       }
       if (!disposed) status = `Connected: ${owned.size} WebMCP tools`;
     } catch (error) {
       status = `WebMCP registration failed: ${error instanceof Error ? error.message : 'Unknown error'}`;
-      for (const name of owned.keys()) remove(name);
+      const errors = remove(owned.keys());
+      if (errors.length) status += `; cleanup failed: ${errors.join('; ')}`;
     }
   };
   let pending = Promise.resolve();
@@ -130,11 +156,9 @@ export async function connectWebMCP(
       return status;
     },
     dispose: () => {
-      if (disposed) return;
       disposed = true;
       unsubscribe();
-      for (const name of owned.keys()) remove(name);
-      status = 'Disconnected';
+      disconnect();
     },
   };
 }

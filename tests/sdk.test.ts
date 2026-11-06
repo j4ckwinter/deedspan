@@ -249,3 +249,89 @@ test('a caller cannot change execution arguments while authorization is pending'
   assert.deepEqual(trace.input, { value: 'before' });
   assert.deepEqual(trace.output, { value: 'before' });
 });
+
+test('native cleanup selects explicit unregister when both mechanisms exist', async () => {
+  const registry = registryWithEcho();
+  const removed: string[] = [];
+  let aborts = 0;
+  const connection = await connectWebMCP(registry, {
+    registerTool(_tool, options) {
+      options?.signal.addEventListener('abort', () => aborts++);
+    },
+    unregisterTool(name) {
+      removed.push(name);
+    },
+  });
+  connection.dispose();
+  connection.dispose();
+  assert.deepEqual(removed, ['echo']);
+  assert.equal(aborts, 0);
+  assert.equal(connection.status, 'Disconnected');
+});
+
+test('native cleanup attempts every tool and retains failures for retry', async () => {
+  const registry = registryWithEcho();
+  registry.register({
+    name: 'second',
+    description: 'Second tool',
+    input: z.object({}),
+    execute: () => null,
+  });
+  const registrations = new Set<string>();
+  const attempts: string[] = [];
+  let fail = true;
+  const connection = await connectWebMCP(registry, {
+    registerTool(tool) {
+      registrations.add(tool.name);
+    },
+    unregisterTool(name) {
+      attempts.push(name);
+      if (name === 'echo' && fail) throw new Error('Temporarily unavailable');
+      registrations.delete(name);
+    },
+  });
+  assert.doesNotThrow(() => connection.dispose());
+  assert.deepEqual(attempts, ['echo', 'second']);
+  assert.deepEqual([...registrations], ['echo']);
+  assert.match(
+    connection.status,
+    /cleanup failed: echo: Temporarily unavailable/,
+  );
+  fail = false;
+  connection.dispose();
+  assert.deepEqual(attempts, ['echo', 'second', 'echo']);
+  assert.equal(registrations.size, 0);
+  assert.equal(connection.status, 'Disconnected');
+});
+
+test('native synchronization recovers after a cleanup failure', async () => {
+  const registry = new ToolRegistry();
+  const definition = {
+    name: 'first',
+    description: 'First tool',
+    input: z.object({}),
+    execute: () => null,
+  };
+  const unregister = registry.register(definition);
+  const registrations = new Set<string>();
+  let fail = true;
+  const connection = await connectWebMCP(registry, {
+    registerTool(tool) {
+      registrations.add(tool.name);
+    },
+    unregisterTool(name) {
+      if (fail) throw new Error('Temporarily unavailable');
+      registrations.delete(name);
+    },
+  });
+  unregister();
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  assert.match(connection.status, /cleanup failed/);
+  assert.deepEqual([...registrations], ['first']);
+  fail = false;
+  registry.register({ ...definition, name: 'second' });
+  await new Promise((resolve) => setTimeout(resolve, 0));
+  assert.deepEqual([...registrations], ['second']);
+  assert.match(connection.status, /Connected: 1/);
+  connection.dispose();
+});

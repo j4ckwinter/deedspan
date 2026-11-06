@@ -3,7 +3,7 @@ import {
   toolDescriptorSchema,
   type ToolDescriptor,
   type ToolTrace,
-} from '../core/types.js';
+} from './types.js';
 
 export interface ToolDefinition<T> {
   name: string;
