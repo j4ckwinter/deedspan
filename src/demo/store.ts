@@ -1,6 +1,6 @@
 import { z } from 'zod';
 import type { Snapshot } from '../core/types.js';
-import { ToolRegistry } from '../sdk/registry.js';
+import { ToolRegistry } from 'short-stack';
 
 export const fixture = (): Snapshot => ({
   projects: [

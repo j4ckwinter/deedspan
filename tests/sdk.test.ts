@@ -335,3 +335,59 @@ test('native synchronization recovers after a cleanup failure', async () => {
   assert.match(connection.status, /Connected: 1/);
   connection.dispose();
 });
+
+test('call context links authorization and execution to a metadata-only observer', async () => {
+  const observed: import('../src/sdk/types.js').ToolTrace[] = [];
+  let executionId = '';
+  const registry = new ToolRegistry({
+    onTrace: (trace) => {
+      observed.push(trace);
+    },
+  });
+  registry.register({
+    name: 'private_echo',
+    description: 'Echo sensitive data',
+    input: z.object({ secret: z.string() }),
+    authorize: (input, context) => {
+      executionId = context.callId;
+      return input.secret === 'private';
+    },
+    execute: (input, context) => {
+      assert.equal(context.callId, executionId);
+      assert(Object.isFrozen(context));
+      return input;
+    },
+  });
+  const result = await registry.call('private_echo', { secret: 'private' });
+  assert.equal(result.id, executionId);
+  assert.deepEqual(result.output, { secret: 'private' });
+  assert.deepEqual(observed, [{ ...result, input: null, output: null }]);
+  const denied = await registry.call('private_echo', { secret: 'different' });
+  assert.equal(denied.status, 'error');
+  assert.equal(observed[1]?.output, null);
+});
+
+test('full trace observers cannot mutate results or turn completed writes into failures', async () => {
+  let executions = 0;
+  const registry = new ToolRegistry({
+    capture: 'full',
+    onTrace: async (trace) => {
+      assert.deepEqual(trace.output, { saved: true });
+      trace.output = { saved: false };
+      throw new Error('Telemetry unavailable');
+    },
+  });
+  registry.register({
+    name: 'write',
+    description: 'Write once',
+    input: z.object({}),
+    execute: () => {
+      executions++;
+      return { saved: true };
+    },
+  });
+  const result = await registry.call('write', {});
+  assert.equal(result.status, 'success');
+  assert.deepEqual(result.output, { saved: true });
+  assert.equal(executions, 1);
+});

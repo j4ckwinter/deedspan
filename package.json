@@ -14,11 +14,19 @@
     "typecheck": "tsc --noEmit",
     "check": "npm run lint && npm run format:check && npm run typecheck && npm test",
     "dev": "node --env-file-if-exists=.env --import tsx server/index.ts",
-    "build": "tsc --noEmit && vite build",
+    "build": "npm run build:sdk && tsc --noEmit && vite build",
     "start": "node --env-file-if-exists=.env --import tsx server/index.ts --production",
     "test": "node --import tsx --test tests/*.test.ts",
     "test:e2e": "playwright test",
-    "scenario:run": "node --import tsx scripts/run-scenario.ts"
+    "scenario:run": "node --import tsx scripts/run-scenario.ts",
+    "build:sdk": "tsc -p tsconfig.sdk.json",
+    "prepack": "npm run build:sdk",
+    "test:package": "node scripts/test-package.mjs",
+    "predev": "npm run build:sdk",
+    "pretypecheck": "npm run build:sdk",
+    "pretest": "npm run build:sdk",
+    "pretest:e2e": "npm run build:sdk",
+    "prescenario:run": "npm run build:sdk"
   },
   "devDependencies": {
     "@eslint/js": "10.0.1",
@@ -36,15 +44,39 @@
     "tsx": "4.23.15",
     "typescript": "6.0.3",
     "typescript-eslint": "8.72.1",
-    "vite": "8.3.6"
+    "vite": "8.3.6",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "express": "5.3.0"
   },
   "overrides": {
     "minimatch@>=7 <11.0.1": "11.0.5"
   },
   "dependencies": {
-    "express": "5.3.0",
-    "react": "19.3.1",
-    "react-dom": "19.3.1",
     "zod": "4.6.7"
+  },
+  "description": "Expose application actions to agents with validation, authorization hooks, and execution traces.",
+  "files": [
+    "lib"
+  ],
+  "main": "./lib/index.js",
+  "types": "./lib/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./lib/index.d.ts",
+      "import": "./lib/index.js"
+    },
+    "./react": {
+      "types": "./lib/react.d.ts",
+      "import": "./lib/react.js"
+    }
+  },
+  "peerDependencies": {
+    "react": ">=19 <20"
+  },
+  "peerDependenciesMeta": {
+    "react": {
+      "optional": true
+    }
   }
 }

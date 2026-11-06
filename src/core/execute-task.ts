@@ -1,4 +1,4 @@
-import type { ToolClient, ToolTrace, ToolDescriptor } from '../sdk/types.js';
+import type { ToolClient, ToolTrace, ToolDescriptor } from 'short-stack';
 import type { AgentMessage, AgentStep } from './types.js';
 
 export async function executeTask(options: {

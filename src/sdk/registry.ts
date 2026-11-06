@@ -5,12 +5,27 @@ import {
   type ToolTrace,
 } from './types.js';
 
+export interface ToolExecutionContext {
+  readonly callId: string;
+}
+
+export interface RegistryOptions {
+  onTrace?: (trace: ToolTrace) => void | Promise<void>;
+  capture?: 'metadata' | 'full';
+}
+
 export interface ToolDefinition<T> {
   name: string;
   description: string;
   input: z.ZodType<T>;
-  execute: (input: T) => unknown | Promise<unknown>;
-  authorize?: () => boolean | Promise<boolean>;
+  execute: (
+    input: T,
+    context: ToolExecutionContext,
+  ) => unknown | Promise<unknown>;
+  authorize?: (
+    input: T,
+    context: ToolExecutionContext,
+  ) => boolean | Promise<boolean>;
 }
 
 export function snapshotValue(value: unknown): unknown {
@@ -34,7 +49,10 @@ export function snapshotValue(value: unknown): unknown {
 export async function captureCall(
   name: string,
   input: unknown,
-  execute: (input: unknown) => unknown | Promise<unknown>,
+  execute: (
+    input: unknown,
+    context: ToolExecutionContext,
+  ) => unknown | Promise<unknown>,
 ): Promise<ToolTrace> {
   const started = performance.now();
   const trace: ToolTrace = {
@@ -47,7 +65,12 @@ export async function captureCall(
   };
   try {
     trace.input = snapshotValue(input);
-    trace.output = snapshotValue(await execute(snapshotValue(trace.input)));
+    trace.output = snapshotValue(
+      await execute(
+        snapshotValue(trace.input),
+        Object.freeze({ callId: trace.id }),
+      ),
+    );
     trace.status = 'success';
   } catch (error) {
     trace.output = {
@@ -60,12 +83,14 @@ export async function captureCall(
 
 interface RegisteredTool {
   descriptor: ToolDescriptor;
-  run: (input: unknown) => Promise<unknown>;
+  run: (input: unknown, context: ToolExecutionContext) => Promise<unknown>;
 }
 
 export class ToolRegistry {
   private readonly tools = new Map<string, RegisteredTool>();
   private readonly listeners = new Set<() => void>();
+
+  constructor(private readonly options: RegistryOptions = {}) {}
 
   register<T>(definition: ToolDefinition<T>): () => void {
     if (this.tools.has(definition.name)) {
@@ -81,12 +106,15 @@ export class ToolRegistry {
     }
     const tool: RegisteredTool = {
       descriptor,
-      run: async (input) => {
-        if (definition.authorize && !(await definition.authorize())) {
+      run: async (input, context) => {
+        const parsed = await definition.input.parseAsync(input);
+        if (
+          definition.authorize &&
+          !(await definition.authorize(parsed, context))
+        ) {
           throw new Error('Permission denied');
         }
-        const parsed = await definition.input.parseAsync(input);
-        return definition.execute(parsed);
+        return definition.execute(parsed, context);
       },
     };
     this.tools.set(definition.name, tool);
@@ -105,11 +133,23 @@ export class ToolRegistry {
   }
 
   async call(name: string, input: unknown): Promise<ToolTrace> {
-    return captureCall(name, input, async (snapshot) => {
+    const trace = await captureCall(name, input, async (snapshot, context) => {
       const tool = this.tools.get(name);
       if (!tool) throw new Error(`Unknown tool: ${name}`);
-      return tool.run(snapshot);
+      return tool.run(snapshot, context);
     });
+    if (this.options.onTrace) {
+      const observed =
+        this.options.capture === 'full'
+          ? structuredClone(trace)
+          : { ...trace, input: null, output: null };
+      try {
+        await this.options.onTrace(observed);
+      } catch {
+        // Telemetry failure must not turn a completed mutation into a retry.
+      }
+    }
+    return trace;
   }
 
   subscribe(listener: () => void): () => void {

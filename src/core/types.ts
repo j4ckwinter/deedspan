@@ -1,8 +1,8 @@
 import { z } from 'zod';
 
-import { toolDescriptorSchema, toolTraceSchema } from '../sdk/types.js';
-export { toolDescriptorSchema, toolTraceSchema } from '../sdk/types.js';
-export type { ToolDescriptor, ToolTrace } from '../sdk/types.js';
+import { toolDescriptorSchema, toolTraceSchema } from 'short-stack';
+export { toolDescriptorSchema, toolTraceSchema } from 'short-stack';
+export type { ToolDescriptor, ToolTrace } from 'short-stack';
 
 export const snapshotSchema = z.object({
   projects: z.array(z.object({ id: z.string(), name: z.string() })),
