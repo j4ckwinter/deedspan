@@ -49,6 +49,8 @@ npm run model:check:update -- --model panky-qwen3:4b
 
 Each trial seeds an existing draft and an unrelated record, then checks discovery, approval before mutation, one version increment, and model-issued retrieval. The test operator approves automatically; this is not a human approval test. Optional positional arguments replace the two default new titles. `--ollama` accepts a loopback HTTP origin and `--output` selects an evidence directory. Reports retain model identity, raw responses, traces, approval, and final state under ignored `artifacts/model-checks/` by default. Rejection and conflict behavior are covered separately by API and browser tests.
 
+For bounded negative model checks, add `--scenario rejected` or `--scenario stale`. Rejection tells the model the request was denied and requires it to stop without further tool calls, returning `{"status":"rejected"}`. Stale checks approve the request, apply a separately approved competing edit, and require the model to observe `conflict` by retrying the saved request once, then stop with `{"status":"conflict"}`. The report separates `backendSafety` from `modelBehavior`: a model can fail to follow the protocol while the application still prevents the blocked write. Both decisions are performed by an automated test operator. Omitting the flag retains the approved workflow.
+
 ## Checks
 
 ```sh

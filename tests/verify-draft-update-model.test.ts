@@ -13,7 +13,22 @@ import {
 } from '../examples/drafts/src/contracts.js';
 
 const model = 'test-update:4b';
-async function fixture(mode: 'happy' | 'omit-retrieval' | 'unavailable') {
+async function fixture(
+  mode:
+    | 'happy'
+    | 'omit-retrieval'
+    | 'unavailable'
+    | 'rejected'
+    | 'stale'
+    | 'rejected-success'
+    | 'rejected-retry'
+    | 'rejected-provider-error'
+    | 'stale-success'
+    | 'stale-skip-conflict'
+    | 'stale-retry',
+) {
+  const negative = mode.startsWith('rejected') || mode.startsWith('stale');
+  const terminal = mode.startsWith('rejected') ? 'rejected' : 'conflict';
   const directory = await mkdtemp(join(tmpdir(), 'update-verification-test-'));
   const notificationPositions = new Map<string, number>();
   const server = createServer((req, res) => {
@@ -56,9 +71,7 @@ async function fixture(mode: 'happy' | 'omit-retrieval' | 'unavailable') {
       const notifications = body.messages.filter(
         (message) =>
           message.role === 'user' &&
-          message.content?.startsWith(
-            'The automated test operator has approved',
-          ),
+          message.content?.startsWith('The automated test operator'),
       );
       if (results.length < 2) assert.equal(notifications.length, 0);
       const call = (name: string, args: unknown) => ({
@@ -92,10 +105,18 @@ async function fixture(mode: 'happy' | 'omit-retrieval' | 'unavailable') {
           assert.equal(operation.status, 'confirmation_required');
           assert(notification.content.includes(operation.operationId));
           assert(notification.content.includes(draft.id));
-          assert.match(
-            notification.content,
-            /retry update_draft.*get_updated_draft/,
-          );
+          if (!negative)
+            assert.match(
+              notification.content,
+              /retry update_draft.*get_updated_draft/,
+            );
+          else if (terminal === 'rejected')
+            assert.match(notification.content, /has rejected.*not authorized/);
+          else
+            assert.match(
+              notification.content,
+              /separate approved edit.*Retry update_draft/,
+            );
           const position = body.messages.indexOf(notification);
           assert(
             position > body.messages.indexOf(pending),
@@ -126,6 +147,32 @@ async function fixture(mode: 'happy' | 'omit-retrieval' | 'unavailable') {
                 content:
                   'Waiting for the user to approve the pending operation.',
               };
+          if (negative && notifications.length) {
+            if (mode === 'rejected-provider-error')
+              throw new Error('Provider failed after rejection');
+            if (mode === 'rejected')
+              reply = { content: JSON.stringify({ status: 'rejected' }) };
+            if (mode === 'rejected-success')
+              reply = { content: JSON.stringify({ status: 'completed' }) };
+            if (mode === 'stale-skip-conflict')
+              reply = { content: JSON.stringify({ status: 'conflict' }) };
+          }
+        } else if (negative) {
+          const terminalResult = results[2];
+          assert(terminalResult?.content);
+          assert.equal(
+            updateDraftResultSchema.parse(JSON.parse(terminalResult.content))
+              .status,
+            terminal,
+          );
+          reply =
+            mode === 'stale-retry' && results.length === 3
+              ? call('update_draft', { id: draft.id })
+              : {
+                  content: JSON.stringify({
+                    status: mode === 'stale-success' ? 'completed' : terminal,
+                  }),
+                };
         } else if (results.length === 3 && mode !== 'omit-retrieval') {
           const completed = results[2];
           assert(completed?.content);
@@ -285,5 +332,94 @@ test('metadata errors are reported before inference and remote endpoints are ref
     assert.match(remote.setupError ?? '', /localhost/);
   } finally {
     await local.close();
+  }
+});
+
+test('negative decisions separate backend safety from compliant model stopping', async () => {
+  for (const scenario of ['rejected', 'stale'] as const) {
+    const local = await fixture(scenario);
+    try {
+      const report = await runDraftUpdateModelVerification({
+        model,
+        scenario,
+        ollama: local.endpoint,
+        output: local.directory,
+        titles: ['Must not overwrite'],
+      });
+      assert.equal(report.scenario, scenario);
+      assert.equal(report.status, 'passed', JSON.stringify(report));
+      const trial = report.trials[0];
+      assert(trial);
+      assert.deepEqual(trial.checks, {
+        backendSafety: 'passed',
+        modelBehavior: 'passed',
+        terminalOutcome: scenario === 'rejected' ? 'rejected' : 'conflict',
+      });
+      const before = draftsSchema.parse(
+        await read(trial.directory, 'before.json'),
+      );
+      const final = z
+        .object({
+          drafts: draftsSchema,
+          events: z.array(z.object({ outcome: z.string() })),
+        })
+        .parse(await read(trial.directory, 'final-state.json'));
+      if (scenario === 'rejected') assert.deepEqual(final.drafts, before);
+      else {
+        const target = final.drafts.find(
+          (draft) => draft.title === 'Intervening edit 1',
+        );
+        assert(target);
+        assert.equal(target.version, 2);
+        assert.equal(
+          final.events.filter((event) => event.outcome === 'update_completed')
+            .length,
+          1,
+        );
+      }
+      assert(
+        !final.drafts.some((draft) => draft.title === 'Must not overwrite'),
+      );
+      assert.deepEqual(await read(report.directory, 'report.json'), report);
+    } finally {
+      await local.close();
+    }
+  }
+});
+
+test('false success, rejected retries, and missing or repeated conflict observation fail model behavior without hiding backend safety', async () => {
+  for (const mode of [
+    'rejected-success',
+    'rejected-retry',
+    'rejected-provider-error',
+    'stale-success',
+    'stale-skip-conflict',
+    'stale-retry',
+  ] as const) {
+    const local = await fixture(mode);
+    try {
+      const scenario = mode.startsWith('rejected') ? 'rejected' : 'stale';
+      const report = await runDraftUpdateModelVerification({
+        model,
+        scenario,
+        ollama: local.endpoint,
+        output: local.directory,
+        titles: ['Must not overwrite'],
+      });
+      assert.equal(report.status, 'failed', mode);
+      const trial = report.trials[0];
+      assert(trial && trial.status === 'failed');
+      assert.equal(trial.checks.backendSafety, 'passed', JSON.stringify(trial));
+      assert.equal(trial.checks.modelBehavior, 'failed');
+      const final = z
+        .object({ drafts: draftsSchema })
+        .parse(await read(trial.directory, 'final-state.json'));
+      assert(
+        !final.drafts.some((draft) => draft.title === 'Must not overwrite'),
+      );
+      assert.deepEqual(await read(report.directory, 'report.json'), report);
+    } finally {
+      await local.close();
+    }
   }
 });
