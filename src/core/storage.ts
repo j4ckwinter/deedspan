@@ -1,50 +1,17 @@
 import { z } from 'zod';
 import {
   scenarioSchema,
-  snapshotSchema,
-  toolDescriptorSchema,
+  runReportSchema,
   type RunReport,
   type Scenario,
 } from './types.js';
 import { defaultScenario } from './scenarios.js';
 
-const reportSchema: z.ZodType<RunReport> = z.object({
-  id: z.string(),
-  scenario: scenarioSchema,
-  startedAt: z.string(),
-  durationMs: z.number(),
-  mode: z.enum(['scripted', 'model']),
-  model: z.string(),
-  tools: z.array(toolDescriptorSchema),
-  initialState: snapshotSchema,
-  finalState: snapshotSchema,
-  traces: z.array(
-    z.object({
-      id: z.string(),
-      name: z.string(),
-      input: z.unknown(),
-      output: z.unknown(),
-      status: z.enum(['success', 'error']),
-      durationMs: z.number(),
-    }),
-  ),
-  assertions: z.array(
-    z.object({
-      name: z.string(),
-      passed: z.boolean(),
-      expected: z.string(),
-      actual: z.string(),
-    }),
-  ),
-  agentMessage: z.string(),
-  error: z.string().nullable(),
-  status: z.enum(['passed', 'failed', 'error']),
-  regression: z.boolean(),
-});
+export const savedStateLimits = { scenarios: 100, runs: 20 } as const;
 const storageSchema = z.object({
   version: z.literal(1),
-  scenarios: z.array(scenarioSchema).max(100),
-  runs: z.array(reportSchema).max(20),
+  scenarios: z.array(scenarioSchema).max(savedStateLimits.scenarios),
+  runs: z.array(runReportSchema).max(savedStateLimits.runs),
 });
 export interface SavedState {
   scenarios: Scenario[];
@@ -86,7 +53,7 @@ export function saveState(
   const data = storageSchema.parse({
     version: 1,
     scenarios,
-    runs: runs.slice(0, 20),
+    runs: runs.slice(0, savedStateLimits.runs),
   });
   storage.setItem(storageKey, JSON.stringify(data));
 }

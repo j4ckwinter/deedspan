@@ -1,19 +1,9 @@
 import { z } from 'zod';
 
-export const toolDescriptorSchema = z.object({
-  name: z.string().min(1).max(100),
-  description: z.string().min(1).max(4000),
-  inputSchema: z.record(z.string(), z.unknown()),
-});
-export type ToolDescriptor = z.infer<typeof toolDescriptorSchema>;
-export interface ToolTrace {
-  id: string;
-  name: string;
-  input: unknown;
-  output: unknown;
-  status: 'success' | 'error';
-  durationMs: number;
-}
+import { toolDescriptorSchema, toolTraceSchema } from '../sdk/types.js';
+export { toolDescriptorSchema, toolTraceSchema } from '../sdk/types.js';
+export type { ToolDescriptor, ToolTrace } from '../sdk/types.js';
+
 export const snapshotSchema = z.object({
   projects: z.array(z.object({ id: z.string(), name: z.string() })),
   drafts: z.array(
@@ -36,30 +26,33 @@ export const scenarioSchema = scenarioInputSchema.extend({
 });
 export type ScenarioInput = z.infer<typeof scenarioInputSchema>;
 export type Scenario = z.infer<typeof scenarioSchema>;
-export type RunMode = 'scripted' | 'model';
-export interface AssertionResult {
-  name: string;
-  passed: boolean;
-  expected: string;
-  actual: string;
-}
-export interface RunReport {
-  id: string;
-  scenario: Scenario;
-  startedAt: string;
-  durationMs: number;
-  mode: RunMode;
-  model: string;
-  tools: ToolDescriptor[];
-  initialState: Snapshot;
-  finalState: Snapshot;
-  traces: ToolTrace[];
-  assertions: AssertionResult[];
-  agentMessage: string;
-  error: string | null;
-  status: 'passed' | 'failed' | 'error';
-  regression: boolean;
-}
+export const runModeSchema = z.enum(['scripted', 'model']);
+export type RunMode = z.infer<typeof runModeSchema>;
+export const assertionResultSchema = z.object({
+  name: z.string(),
+  passed: z.boolean(),
+  expected: z.string(),
+  actual: z.string(),
+});
+export type AssertionResult = z.infer<typeof assertionResultSchema>;
+export const runReportSchema = z.object({
+  id: z.string(),
+  scenario: scenarioSchema,
+  startedAt: z.string(),
+  durationMs: z.number(),
+  mode: runModeSchema,
+  model: z.string(),
+  tools: z.array(toolDescriptorSchema),
+  initialState: snapshotSchema,
+  finalState: snapshotSchema,
+  traces: z.array(toolTraceSchema),
+  assertions: z.array(assertionResultSchema),
+  agentMessage: z.string(),
+  error: z.string().nullable(),
+  status: z.enum(['passed', 'failed', 'error']),
+  regression: z.boolean(),
+});
+export type RunReport = z.infer<typeof runReportSchema>;
 export const functionCallSchema = z.object({
   id: z.string().min(1),
   type: z.literal('function'),

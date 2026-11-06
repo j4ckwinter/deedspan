@@ -5,7 +5,7 @@ import { createDemo } from './demo/store.js';
 import { connectWebMCP } from './sdk/webmcp.js';
 import { runScenario } from './core/runner.js';
 import { scriptedStep, modelStep } from './core/agents.js';
-import { loadState, saveState } from './core/storage.js';
+import { loadState, saveState, savedStateLimits } from './core/storage.js';
 import {
   scenarioInputSchema,
   type RunMode,
@@ -78,7 +78,7 @@ function App() {
       setError(parsed.error.issues.map((i) => i.message).join('; '));
       return;
     }
-    if (scenarios.length >= 100) {
+    if (scenarios.length >= savedStateLimits.scenarios) {
       setError('Scenario limit reached. Delete a scenario first.');
       return;
     }
@@ -112,7 +112,7 @@ function App() {
         regression,
         signal: controller.signal,
       });
-      const next = [report, ...runs].slice(0, 20);
+      const next = [report, ...runs].slice(0, savedStateLimits.runs);
       setRuns(next);
       persist(scenarios, next);
     } catch (e) {

@@ -178,3 +178,33 @@ test('regression routes Engineering drafts to a different project too', async ()
   assert.equal(report.status, 'failed');
   assert.equal(report.finalState.drafts[0]?.projectId, 'marketing');
 });
+
+test('fixture setup failure releases the scenario lock and regression mode', async () => {
+  const demo = createDemo();
+  const reset = demo.reset;
+  demo.reset = () => {
+    throw new Error('Fixture unavailable');
+  };
+  await assert.rejects(run(demo, true), /Fixture unavailable/);
+  demo.reset = reset;
+  assert.equal((await run(demo)).status, 'passed');
+});
+
+test('already-cancelled scenarios do not reset existing application state', async () => {
+  const demo = createDemo();
+  await run(demo);
+  const before = demo.snapshot();
+  await assert.rejects(
+    runScenario({
+      demo,
+      scenario: defaultScenario,
+      mode: 'scripted',
+      model: 'scripted-demo-v1',
+      step: scriptedStep,
+      signal: AbortSignal.abort(),
+    }),
+    { name: 'AbortError' },
+  );
+  assert.deepEqual(demo.snapshot(), before);
+  assert.equal((await run(demo)).status, 'passed');
+});
