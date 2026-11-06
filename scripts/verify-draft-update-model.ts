@@ -303,7 +303,7 @@ export async function runDraftUpdateModelVerification(options: {
       const modelMessage = await executeTask({
         prompt: `Find the existing draft titled ${JSON.stringify(target.title)}, update its title to ${JSON.stringify(title)}, then retrieve it.`,
         instructions:
-          'Use search_drafts with no arguments to discover the existing draft. Call update_draft with its discovered id. The application supplies the exact new title, version, and operation ID. Approval is handled separately by the user. If confirmation_required is returned, retry update_draft with the same id after approval. After update_draft completes, call get_updated_draft with no arguments. Only claim success after retrieving the updated record.',
+          'Use search_drafts with no arguments to discover the existing draft. Call update_draft with its discovered id. The application supplies the exact new title, version, and operation ID. Approval is handled separately by the user. If confirmation_required is returned, retry update_draft with the same id after approval. After update_draft completes, call get_updated_draft with no arguments. Only claim success after retrieving the updated record. Exact argument examples: search_drafts uses {}; update_draft uses {"id":"<id returned by search_drafts>"}; get_updated_draft uses {}. Replace the example ID placeholder with the actual discovered ID. Do not include title, query, version, expectedVersion, operationId, or operation_id in any tool arguments. If validation rejects a call, correct its arguments using these examples and issue the tool call; saying that you will retry does not execute it.',
         tools: {
           list: () => registry.list(),
           call: async (name, input) => {
