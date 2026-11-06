@@ -8,3 +8,6 @@ coverage/
 .env
 .env.*
 !.env.example
+playwright-report/
+test-results/
+scenario-report.json
