@@ -8,7 +8,9 @@ import { runNpm } from './npm.ts';
 const root = resolve(import.meta.dirname, '..');
 if (process.argv.length > 3)
   throw new Error('Usage: npm run test:consumer -- [archive.tgz]');
-const directory = await mkdtemp(join(tmpdir(), 'deedspan-consumer-'));
+const directory = await realpath(
+  await mkdtemp(join(tmpdir(), 'deedspan-consumer-')),
+);
 try {
   let archive;
   if (process.argv[2]) archive = resolve(process.argv[2]);
