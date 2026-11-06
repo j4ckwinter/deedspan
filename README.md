@@ -159,6 +159,30 @@ Resume uses the same operation ID across CLI and backend restarts. If approval i
 
 The browser retains its existing explicit-operation tools for its own form and approval retries. Approval pauses and retries in the CLI are application-managed, rather than a model decision to approve or resume.
 
+Every CLI invocation, including a resume, requires a successful `search_projects` result containing Marketing before its first `create_draft` call. Skipped, failed or late discovery stops the run before a draft request reaches the backend. This checks the model's use of discovery; knowing the project ID without discovery does not satisfy the check.
+
+### Repeatable local model checks
+
+With Ollama already running and the example dependencies installed, run:
+
+```sh
+npm run model:check -- --model panky-qwen3:4b
+```
+
+This command starts its own isolated draft backend and proxy on temporary loopback ports. It runs the actual agent CLI, checks the exact pending title/project and absence of a saved draft, approves through a separate authenticated test operator, then resumes the CLI from its saved task file. These are **automated test approvals**, not human browser approvals. No existing draft application, database or password is used.
+
+Supply titles as positional arguments to change the cases, and choose an evidence directory with `--output`:
+
+```sh
+npm run model:check -- --model panky-qwen3:4b --output artifacts/model-checks "Launch notes: November" "Campaign A/B"
+```
+
+Each invocation creates a unique directory with separate trial records, so earlier evidence is preserved. Reports include the selected model digest, Ollama version and model configuration, prompts and raw model replies, CLI output, approval records and persisted outcomes. Failures retain their evidence and do not prevent subsequent titles from running. Any failed trial makes the command exit unsuccessfully.
+
+The default `artifacts/model-checks/` directory is ignored by Git. Keep reports locally, or copy selected evidence into a named archive when it is ready to commit.
+
+`--ollama` overrides the local Ollama origin, which defaults to `http://127.0.0.1:11434`. The command accepts loopback HTTP endpoints only. It records tool payloads and model responses; use test titles suitable for saving in local evidence files. Services and disposable databases created by the command are cleaned up afterward. The existing Ollama service stays running. A successful automated run does not replace the browser approval check or establish a model's general reliability.
+
 Use an otherwise idle local example during this check. The run creates persistent data and sends tool inputs and outputs to the configured model provider. `DRAFTS_ORIGIN` and `WORKBENCH_ORIGIN` override the local application URLs. No model is bundled; live inference and external developer adoption remain validation steps requiring an available model and another developer.
 
 ## Scenarios and reports

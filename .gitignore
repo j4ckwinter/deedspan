@@ -13,3 +13,4 @@ test-results/
 scenario-report.json
 lib/
 .data/draft-agent/
+/artifacts/model-checks/

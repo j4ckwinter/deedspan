@@ -29,6 +29,8 @@ The real-model harness runs from the repository root with `npm run example:agent
 
 For one-draft agent tasks, `registerDraftTaskTools(registry, request, operationId)` binds an application-owned UUID and exposes only project and title to the model. The caller must persist that UUID before the first request and reuse it when resuming the same task. The CLI does this with a saved task file and `--resume`. A new task gets a new UUID even when its title matches an earlier task. Backend approval and idempotency rules are the same for both registrations.
 
+The CLI requires successful Marketing discovery before any creation attempt, including after a resume. From the repository root, `npm run model:check -- --model panky-qwen3:4b` runs repeatable checks against an isolated backend with explicitly labeled automated approvals. See the root README for custom titles, local endpoint settings and evidence output.
+
 ## Checks
 
 ```sh

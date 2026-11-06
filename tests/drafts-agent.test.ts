@@ -55,6 +55,7 @@ test('a durable agent task survives approval and backend restarts without duplic
   const alice = { id: 'alice', name: 'Alice' };
   const selected: string[] = [];
   let inferenceCount = 0;
+  let discovery: 'normal' | 'skipped' | 'late' | 'failed' = 'normal';
   model.on('request', (req, res) => {
     void (async () => {
       inferenceCount++;
@@ -92,7 +93,20 @@ test('a durable agent task survives approval and backend restarts without duplic
         };
       };
       let reply;
-      if (results.length === 0) reply = call('search_projects', {});
+      if (results.length === 0 && discovery === 'skipped')
+        reply = call('create_draft', { projectId: 'marketing', title });
+      else if (results.length === 0 && discovery === 'late') {
+        const create = call('create_draft', { projectId: 'marketing', title });
+        const search = call('search_projects', {});
+        reply = {
+          content: null,
+          tool_calls: [...create.tool_calls, ...search.tool_calls],
+        };
+      } else if (results.length === 0)
+        reply = call(
+          'search_projects',
+          discovery === 'failed' ? { query: 'Marketing' } : {},
+        );
       else if (results.length === 1)
         reply = call('create_draft', { projectId: 'marketing', title });
       else if (results.length === 2) {
@@ -143,6 +157,19 @@ test('a durable agent task survives approval and backend restarts without duplic
     assert.fail(`No task location in output: ${output}`);
   };
   try {
+    for (const behavior of ['skipped', 'late', 'failed'] as const) {
+      discovery = behavior;
+      const rejected = await run([title]);
+      assert.ok(rejected.error, `${behavior} discovery must fail`);
+      assert.match(
+        rejected.stderr,
+        /Marketing discovery required before create_draft/,
+      );
+      assert.equal(store.pending(alice).length, 0);
+      assert.equal(store.drafts(alice).length, 0);
+    }
+    discovery = 'normal';
+    selected.length = 0;
     const first = await run([title]);
     assert.ok(first.error);
     assert.match(first.stderr, /Approval requires.*--resume/);
@@ -181,6 +208,15 @@ test('a durable agent task survives approval and backend restarts without duplic
       assert.equal(await readFile(task.taskFile, 'utf8'), originalManifest);
     }
     const previousDrafts = draftsSchema.parse(store.drafts(alice));
+    discovery = 'skipped';
+    const undiscoveredResume = await run(['--resume', task.taskFile]);
+    assert.ok(undiscoveredResume.error);
+    assert.match(
+      undiscoveredResume.stderr,
+      /Marketing discovery required before create_draft/,
+    );
+    assert.deepEqual(draftsSchema.parse(store.drafts(alice)), previousDrafts);
+    discovery = 'normal';
     const second = await run([title]);
     assert.ok(second.error);
     assert.match(second.stderr, /Approval requires.*--resume/);

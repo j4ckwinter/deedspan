@@ -15,6 +15,7 @@ import {
   sessionSchema,
   errorSchema,
   createDraftResultSchema,
+  projectsSchema,
 } from '../examples/drafts/src/contracts.js';
 import { executeTask } from '../src/core/execute-task.js';
 import { agentReplySchema } from '../src/core/types.js';
@@ -119,6 +120,23 @@ const message = await executeTask({
   tools: {
     list: () => registry.list(),
     call: async (name, input) => {
+      if (name === 'create_draft') {
+        assert(
+          traces.some((trace) => {
+            if (trace.name !== 'search_projects' || trace.status !== 'success')
+              return false;
+            const projects = projectsSchema.safeParse(trace.output);
+            return (
+              projects.success &&
+              projects.data.some(
+                (project) =>
+                  project.id === 'marketing' && project.name === 'Marketing',
+              )
+            );
+          }),
+          'Marketing discovery required before create_draft',
+        );
+      }
       const trace = await registry.call(name, input);
       const pending = pendingSchema.safeParse(trace.output);
       if (!pending.success) return trace;

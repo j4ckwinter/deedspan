@@ -29,6 +29,8 @@
     "prescenario:run": "npm run build:sdk",
     "example:agent": "node --env-file-if-exists=.env --import tsx scripts/run-drafts-agent.ts",
     "preexample:agent": "npm run build:sdk",
+    "model:check": "node --import tsx scripts/verify-drafts-model.ts",
+    "premodel:check": "npm run build:sdk",
     "example:install": "node scripts/install-example.mjs"
   },
   "devDependencies": {
